@@ -6,6 +6,10 @@
 <meta name="theme-color" content="#0F1B33">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CODEX">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icones/icone-192.png">
 <title>CODEX — Python</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -101,6 +105,24 @@ p.legenda{color:var(--neblina);font-style:italic;margin:0 0 26px}
 .cartao[data-estado="concluida"] .barra i{background:var(--verde)}
 
 .futuro{margin-top:30px;padding-top:18px;border-top:1px solid var(--linha)}
+
+/* ---------------- Módulos ---------------- */
+.modulo{margin-bottom:14px}
+.cabeca-modulo{display:block;width:100%;text-align:left;background:var(--tinta-baixa);
+  border:1px solid var(--linha);border-radius:8px;padding:16px 18px;cursor:pointer;color:inherit;
+  transition:border-color .2s}
+.cabeca-modulo:hover:not(:disabled){border-color:var(--ouro-fraco)}
+.cabeca-modulo:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+.cabeca-modulo:disabled{opacity:.4;cursor:not-allowed}
+.cabeca-modulo .numero{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--ouro);text-transform:uppercase}
+.cabeca-modulo h3{font-family:var(--display);font-size:19px;font-weight:600;letter-spacing:.05em;margin:6px 0 5px}
+.cabeca-modulo p{margin:0;color:var(--neblina);font-size:16px;font-style:italic}
+.cabeca-modulo .rodape{display:flex;justify-content:space-between;align-items:center;margin-top:12px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--neblina)}
+.cabeca-modulo .seta{color:var(--ouro)}
+.modulo[data-estado="concluido"] .cabeca-modulo{border-color:rgba(116,195,154,.4)}
+.modulo .licoes{padding:12px 0 4px 16px;border-left:1px solid var(--linha);margin-left:18px}
 .futuro span{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.16em;
   text-transform:uppercase;color:#3E5170;margin-bottom:10px}
 .futuro li{color:#3E5170;font-style:italic;list-style:none;padding:3px 0}
@@ -430,8 +452,21 @@ var CONFIG = {
   supabaseKey : "sb_publishable_qXCYqg1WdmelY9D1mptZXg_U8NdoKby",
   perfil      : "bispo",
   modulos     : ["curso/m01.json"],
+  emBreve     : [
+    "Decisões", "Repetição", "Listas e tuplas", "Dicionários e conjuntos",
+    "Funções", "Texto", "Dados e arquivos", "Erros e depuração", "Objetos e módulos"
+  ],
   limiteMs    : 6000
 };
+
+/* Aspas tipográficas e espaços especiais que o teclado do iPhone e do Mac
+   inserem sozinhos. Python não os aceita, então o editor os converte. */
+function normalizarTexto(t){
+  return String(t)
+    .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+    .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+    .replace(/\u00A0/g, " ");
+}
 
 /* =======================================================================
    Utilidades
@@ -660,6 +695,16 @@ function criarEditor(alvo, valor){
       extraKeys:{ Tab: function(c){ c.replaceSelection("    "); } }
     });
     cm.setValue(valor || "");
+    cm.on("beforeChange", function(inst, mudanca){
+      if (!mudanca.text || !mudanca.update) return;
+      var alterou = false;
+      var limpo = mudanca.text.map(function(linha){
+        var n = normalizarTexto(linha);
+        if (n !== linha) alterou = true;
+        return n;
+      });
+      if (alterou) mudanca.update(mudanca.from, mudanca.to, limpo);
+    });
     editor = {
       cm: cm,
       ler: function(){ return cm.getValue(); },
@@ -690,6 +735,14 @@ function criarEditor(alvo, valor){
     alvo.appendChild(t2);
     t2.addEventListener("keydown", function(e){
       if (e.key === "Tab"){ e.preventDefault(); editor.inserir("    "); }
+    });
+    t2.addEventListener("input", function(){
+      var limpo = normalizarTexto(t2.value);
+      if (limpo !== t2.value){
+        var p = t2.selectionStart;
+        t2.value = limpo;
+        t2.selectionStart = t2.selectionEnd = p;
+      }
     });
     editor = {
       ler: function(){ return t2.value; },
@@ -770,7 +823,7 @@ function traduzirErro(bruto){
 /* =======================================================================
    Estado
    ======================================================================= */
-var estado = { curso:null, progresso:{}, licao:null, indice:0, tentativas:0, respondido:false };
+var estado = { modulos:[], modulo:null, aberto:0, progresso:{}, licao:null, indice:0, tentativas:0, respondido:false };
 
 function exerciciosFeitos(licao){
   var n = 0;
@@ -781,6 +834,14 @@ function exerciciosFeitos(licao){
 }
 function licaoCompleta(licao){
   return exerciciosFeitos(licao) === licao.exercicios.length;
+}
+function moduloCompleto(mod){
+  return mod.licoes.every(licaoCompleta);
+}
+function contarModulo(mod){
+  var feitos = 0, total = 0;
+  mod.licoes.forEach(function(l){ feitos += exerciciosFeitos(l); total += l.exercicios.length; });
+  return { feitos: feitos, total: total };
 }
 
 /* =======================================================================
@@ -836,32 +897,62 @@ function telaTrilha(){
   $("btnVoltar").style.display = "none";
   $("tituloTopo").textContent = "CODEX";
 
-  var c = estado.curso;
+  /* Abre por padrão o primeiro módulo ainda não concluído */
+  var padrao = 0;
+  for (var j = 0; j < estado.modulos.length; j++){
+    if (!moduloCompleto(estado.modulos[j])){ padrao = j; break; }
+  }
+  if (estado.aberto === null) estado.aberto = padrao;
+
   var h = '<div class="folha">' +
-    '<h2 class="secao">Módulo ' + c.modulo + " — " + esc(c.titulo) + "</h2>" +
-    '<p class="legenda">' + esc(c.subtitulo) + "</p>";
+    '<h2 class="secao">Trilha de Python</h2>' +
+    '<p class="legenda">Do primeiro print até escrever os seus próprios programas.</p>';
 
-  c.licoes.forEach(function(licao, i){
-    var feitos = exerciciosFeitos(licao);
-    var total = licao.exercicios.length;
-    var anterior = i === 0 ? null : c.licoes[i-1];
-    var travada = anterior ? !licaoCompleta(anterior) : false;
-    var est = feitos === total ? "concluida" : (feitos > 0 ? "andamento" : "aberta");
+  estado.modulos.forEach(function(mod, m){
+    var c = contarModulo(mod);
+    var anterior = m === 0 ? null : estado.modulos[m-1];
+    var travado = anterior ? !moduloCompleto(anterior) : false;
+    var completo = c.feitos === c.total;
+    var aberto = (m === estado.aberto) && !travado;
 
-    h += '<button class="cartao" data-estado="' + est + '" data-licao="' + licao.id + '"' +
-         (travada ? " disabled" : "") + ">" +
-      '<span class="numero">Lição ' + licao.numero + "</span>" +
-      "<h3>" + esc(licao.titulo) + "</h3>" +
-      "<p>" + esc(licao.resumo) + "</p>" +
-      '<div class="barra"><i style="width:' + Math.round(feitos/total*100) + '%"></i></div>' +
-      '<div class="rodape"><span>' + feitos + " de " + total + " exercícios</span><span>" +
-        (travada ? "conclua a anterior" : (feitos === total ? "concluída" : (feitos > 0 ? "em andamento" : "começar"))) +
-      "</span></div></button>";
+    h += '<div class="modulo" data-estado="' + (completo ? "concluido" : (c.feitos ? "andamento" : "aberto")) + '">' +
+      '<button class="cabeca-modulo" data-mod="' + m + '"' + (travado ? " disabled" : "") + '>' +
+        '<span class="numero">Módulo ' + mod.modulo + "</span>" +
+        "<h3>" + esc(mod.titulo) + "</h3>" +
+        "<p>" + esc(mod.subtitulo) + "</p>" +
+        '<div class="barra"><i style="width:' + Math.round(c.feitos/c.total*100) + '%"></i></div>' +
+        '<div class="rodape"><span>' + c.feitos + " de " + c.total + " exercícios</span>" +
+        '<span class="seta">' + (travado ? "trancado" : (aberto ? "▴" : "▾")) + "</span></div>" +
+      "</button>";
+
+    if (aberto){
+      h += '<div class="licoes">';
+      mod.licoes.forEach(function(licao, i){
+        var feitos = exerciciosFeitos(licao);
+        var total = licao.exercicios.length;
+        var trava = i === 0 ? false : !licaoCompleta(mod.licoes[i-1]);
+        var est = feitos === total ? "concluida" : (feitos > 0 ? "andamento" : "aberta");
+
+        h += '<button class="cartao" data-estado="' + est + '" data-mod="' + m + '" data-licao="' + licao.id + '"' +
+             (trava ? " disabled" : "") + ">" +
+          '<span class="numero">Lição ' + licao.numero + "</span>" +
+          "<h3>" + esc(licao.titulo) + "</h3>" +
+          "<p>" + esc(licao.resumo) + "</p>" +
+          '<div class="barra"><i style="width:' + Math.round(feitos/total*100) + '%"></i></div>' +
+          '<div class="rodape"><span>' + feitos + " de " + total + " exercícios</span><span>" +
+            (trava ? "conclua a anterior" : (feitos === total ? "concluída" : (feitos > 0 ? "em andamento" : "começar"))) +
+          "</span></div></button>";
+      });
+      h += "</div>";
+    }
+    h += "</div>";
   });
 
-  if (c.proximas && c.proximas.length){
+  if (CONFIG.emBreve && CONFIG.emBreve.length){
     h += '<div class="futuro"><span>ainda por escrever</span><ul>';
-    c.proximas.forEach(function(t){ h += "<li>" + esc(t) + "</li>"; });
+    CONFIG.emBreve.forEach(function(t, k){
+      h += "<li>Módulo " + (estado.modulos.length + k + 1) + " — " + esc(t) + "</li>";
+    });
     h += "</ul></div>";
   }
 
@@ -869,9 +960,19 @@ function telaTrilha(){
   app.innerHTML = h;
   app.scrollTop = 0;
 
+  Array.prototype.forEach.call(app.querySelectorAll(".cabeca-modulo"), function(b){
+    b.addEventListener("click", function(){
+      var m = Number(b.dataset.mod);
+      estado.aberto = (estado.aberto === m) ? -1 : m;
+      telaTrilha();
+    });
+  });
+
   Array.prototype.forEach.call(app.querySelectorAll(".cartao"), function(b){
     b.addEventListener("click", function(){
-      var alvo = c.licoes.filter(function(l){ return l.id === b.dataset.licao; })[0];
+      var mod = estado.modulos[Number(b.dataset.mod)];
+      var alvo = mod.licoes.filter(function(l){ return l.id === b.dataset.licao; })[0];
+      estado.modulo = mod;
       abrirLicao(alvo);
     });
   });
@@ -1291,16 +1392,24 @@ async function entrar(){
 async function iniciar(){
   ligarMotor();
 
+  if ("serviceWorker" in navigator){
+    navigator.serviceWorker.register("sw.js").catch(function(e){ console.warn("sw:", e); });
+  }
+
   app.innerHTML = '<div class="folha"><p class="legenda">Carregando a trilha…</p></div>';
 
   /* Conteúdo do curso */
   try{
-    var r = await fetch(CONFIG.modulos[0], { cache:"no-cache" });
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    estado.curso = await r.json();
+    var respostas = await Promise.all(CONFIG.modulos.map(async function(caminho){
+      var r = await fetch(caminho, { cache:"no-cache" });
+      if (!r.ok) throw new Error(caminho + " — HTTP " + r.status);
+      return r.json();
+    }));
+    estado.modulos = respostas;
+    estado.aberto = null;
   }catch(e){
     app.innerHTML = '<div class="folha"><h2 class="secao">Não achei o conteúdo</h2>' +
-      '<p class="legenda">O arquivo <code>' + esc(CONFIG.modulos[0]) + '</code> não foi carregado. ' +
+      '<p class="legenda">Um arquivo do curso não foi carregado. ' +
       'Confirme que a pasta <code>curso</code> está no repositório e que você está abrindo pelo GitHub Pages, não pelo Finder.</p>' +
       '<div class="exemplo"><pre>' + esc(e.message) + "</pre></div></div>";
     return;
