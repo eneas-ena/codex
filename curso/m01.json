@@ -242,12 +242,359 @@
           "solucao": "tema = \"A graça que basta\"\ntexto = \"2 Coríntios 12\"\n\nprint(f\"O tema {tema} será pregado em {texto}.\")"
         }
       ]
-    }
-  ],
+    },
 
-  "proximas": [
-    "Contas e conversões",
-    "Perguntar ao usuário sem input",
-    "Recapitulação do Módulo 1"
+    {
+      "id": "m01l03",
+      "numero": 3,
+      "titulo": "Contas e conversões",
+      "resumo": "Fazer Python calcular por você, e transformar texto em número quando preciso.",
+      "conceito": [
+        {
+          "tipo": "texto",
+          "conteudo": "Python é, entre outras coisas, uma calculadora obediente. Os quatro sinais básicos você já conhece da escola: mais, menos, asterisco para multiplicar e barra para dividir."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(120 + 35)\nprint(120 - 35)\nprint(120 * 2)\nprint(120 / 4)",
+          "nota": "Repare no último resultado: 30.0, e não 30. A barra sempre devolve um float, mesmo quando a divisão é exata."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Além desses, há três operadores que vão te servir muito. A barra dupla divide e descarta o resto, devolvendo um inteiro. O sinal de porcentagem faz o contrário: devolve só o resto. E o asterisco duplo eleva a uma potência."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(17 // 5)   # quantas vezes 5 cabe em 17\nprint(17 % 5)    # o que sobra\nprint(2 ** 10)   # 2 elevado a 10",
+          "nota": "A barra dupla e o resto andam juntos: 5 cabe 3 vezes em 17, e sobram 2. São a ferramenta para repartir cadeiras em fileiras, dividir alunos em turmas, ou descobrir se um número é par."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "A ordem das operações é a mesma da matemática: primeiro potências, depois multiplicação e divisão, por último soma e subtração. E, como no papel, os parênteses mandam mais que tudo."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(2 + 3 * 4)     # multiplica antes de somar\nprint((2 + 3) * 4)   # o parêntese força a soma primeiro",
+          "nota": "Na dúvida, ponha parênteses. Eles não custam nada e tornam a intenção evidente para quem ler depois — inclusive você, daqui a seis meses."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Agora o ponto em que mais se tropeça. Texto e número não se misturam. Se você tentar somar a palavra 143 com o número 10, Python recusa, porque não sabe se você quer somar ou emendar."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "quantidade = \"143\"   # isto é texto\n\n# print(quantidade + 10)   <- isto daria TypeError\n\nprint(int(quantidade) + 10)",
+          "nota": "A função int() converte texto em número inteiro. Existem também float(), para decimais, e str(), que faz o caminho inverso e transforma número em texto."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Cada conversão tem seu uso. Você usa int ou float quando recebe um número em forma de texto e precisa calcular com ele. E usa str quando precisa emendar um número dentro de uma frase pelo sinal de mais — embora, na maior parte das vezes, a f-string que você já conhece resolva isso melhor."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "cultos = 3\n\nprint(\"Foram \" + str(cultos) + \" cultos.\")\nprint(f\"Foram {cultos} cultos.\")",
+          "nota": "As duas linhas mostram o mesmo. A segunda é mais limpa, e é a que você deve preferir."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "int() só aceita texto que seja mesmo um número inteiro. int(\"12\") funciona; int(\"doze\") e int(\"12,5\") dão ValueError — o segundo porque Python espera ponto, não vírgula, nas casas decimais."
+        }
+      ],
+      "laboratorio": {
+        "instrucao": "Este é o cálculo de uma escala real. Rode, depois mude o número de pessoas e de fileiras, experimente trocar a barra dupla pela simples, e tente somar pessoas com um texto para ver o TypeError de perto.",
+        "codigo": "pessoas = 143\nporFileira = 12\n\nfileirasCheias = pessoas // porFileira\nsobra = pessoas % porFileira\n\nprint(f\"{fileirasCheias} fileiras cheias\")\nprint(f\"e mais {sobra} pessoas na última\")\nprint(f\"Total de fileiras necessárias: {fileirasCheias + 1}\")"
+      },
+      "exercicios": [
+        {
+          "id": "e1",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "print(10 / 2)",
+          "opcoes": ["5", "5.0", "5,0", "Erro, porque 10 não divide por 2"],
+          "correta": 1,
+          "explicacao": "A barra simples sempre devolve float, mesmo quando a divisão é exata. Se você quisesse o inteiro 5, usaria a barra dupla."
+        },
+        {
+          "id": "e2",
+          "tipo": "escolha",
+          "enunciado": "Sua igreja tem 250 cadeiras dispostas em fileiras de 18. Qual expressão diz quantas pessoas ficariam na última fileira incompleta?",
+          "opcoes": ["250 / 18", "250 // 18", "250 % 18", "250 ** 18"],
+          "correta": 2,
+          "explicacao": "O sinal de porcentagem devolve o resto da divisão — exatamente o que sobra depois de encher todas as fileiras possíveis. A barra dupla daria o número de fileiras cheias."
+        },
+        {
+          "id": "e3",
+          "tipo": "escolha",
+          "enunciado": "Qual é o resultado?",
+          "codigo": "print(10 + 2 * 5)",
+          "opcoes": ["60", "20", "17", "70"],
+          "correta": 1,
+          "explicacao": "A multiplicação vem antes da soma: 2 vezes 5 dá 10, mais os 10 iniciais dá 20. Para obter 60 seria preciso escrever (10 + 2) * 5."
+        },
+        {
+          "id": "e4",
+          "tipo": "escolha",
+          "enunciado": "Este código dá erro. Qual é o conserto correto?",
+          "codigo": "inscritos = \"48\"\nvagas = 60\n\nprint(vagas - inscritos)",
+          "opcoes": [
+            "Trocar o menos por vírgula",
+            "Escrever print(vagas - int(inscritos))",
+            "Escrever print(str(vagas) - inscritos)",
+            "Não há erro nenhum"
+          ],
+          "correta": 1,
+          "explicacao": "A variável inscritos guarda texto. Para entrar numa subtração ela precisa virar número, e int() faz isso. A terceira opção pioraria: transformaria os dois em texto, e texto não se subtrai."
+        },
+        {
+          "id": "e5",
+          "tipo": "codigo",
+          "enunciado": "Três turmas do curso teológico fizeram a mesma prova. Calcule a média das notas e guarde na variável media.",
+          "inicial": "turmaA = 90\nturmaB = 75\nturmaC = 84\n\n# escreva o cálculo da média aqui",
+          "verificacao": "expressao",
+          "testes": [
+            { "rotulo": "media", "chamada": "media", "esperado": "83.0" }
+          ],
+          "dica": "Some as três e divida por 3. Cuidado com a ordem: sem parênteses, Python divide só a última antes de somar. Use (turmaA + turmaB + turmaC) / 3.",
+          "solucao": "turmaA = 90\nturmaB = 75\nturmaC = 84\n\nmedia = (turmaA + turmaB + turmaC) / 3"
+        },
+        {
+          "id": "e6",
+          "tipo": "codigo",
+          "enunciado": "O valor da entrada chegou como texto. Converta-o, calcule o dízimo (a décima parte) e mostre exatamente a linha esperada.",
+          "mostraEsperado": true,
+          "inicial": "entradaTexto = \"1250\"\n\n# converta, calcule e imprima",
+          "verificacao": "saida",
+          "esperado": "De R$ 1250 o dízimo é R$ 125.0",
+          "dica": "Primeiro entrada = int(entradaTexto). Depois dizimo = entrada / 10. Por fim uma f-string com as duas variáveis. Lembre que a divisão sempre produz um float, por isso o resultado sai como 125.0.",
+          "solucao": "entradaTexto = \"1250\"\n\nentrada = int(entradaTexto)\ndizimo = entrada / 10\n\nprint(f\"De R$ {entrada} o dízimo é R$ {dizimo}\")"
+        }
+      ]
+    },
+
+    {
+      "id": "m01l04",
+      "numero": 4,
+      "titulo": "Quando o código não roda",
+      "resumo": "Ler a mensagem de erro como quem lê um versículo: pelo fim, e com calma.",
+      "conceito": [
+        {
+          "tipo": "texto",
+          "conteudo": "Errar não é acidente na programação: é método. Ninguém escreve código certo de primeira, e a diferença entre quem avança e quem trava não é o número de erros, mas a velocidade com que se lê o que a máquina respondeu."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "A boa notícia é que Python quase sempre diz exatamente o que houve. O problema é que ele diz em várias linhas, e a linha que interessa é a última."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "membros = 210\nvisitantes = \"35\"\n\nprint(membros + visitantes)",
+          "nota": "Execute e leia com atenção a resposta antes de seguir a leitura."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "A resposta tem três partes, e vale lê-la de baixo para cima. A última linha traz o tipo do erro e a explicação: TypeError, seguido do motivo. A linha acima mostra o trecho exato do seu código que quebrou. E a primeira linha, Rastreamento, é só o aviso de que o que vem abaixo é o caminho que Python percorreu até tropeçar."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "Comece sempre pela última linha. Ela responde o quê. Depois suba uma linha, para saber onde. Só se ainda restar dúvida vale percorrer o resto do rastreamento."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Os erros se dividem em duas famílias, e a diferença importa. O SyntaxError acontece antes de qualquer coisa rodar: Python não conseguiu nem entender o que você escreveu, e nenhuma linha do programa chega a ser executada. Os demais acontecem durante a execução: o código estava compreensível, mas alguma coisa deu errado no caminho."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(\"Esta linha aparece?\")\nprint(\"Colossenses)",
+          "nota": "Rode. A primeira linha não aparece, embora esteja perfeita — porque o erro é de sintaxe, e Python nem começou a executar."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Compare com o caso abaixo, em que as primeiras linhas aparecem normalmente antes de o programa parar. Aí o erro é de execução, e a saída já produzida continua valendo."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(\"Primeira linha\")\nprint(\"Segunda linha\")\nprint(totalGeral)",
+          "nota": "As duas primeiras aparecem, e o NameError interrompe na terceira."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Vale guardar de cor os cinco nomes que você mais vai encontrar. SyntaxError: escrita malformada, quase sempre aspas ou parêntese aberto e não fechado, ou dois-pontos faltando. NameError: nome que Python nunca viu, em geral erro de grafia ou de maiúscula. TypeError: operação entre tipos incompatíveis, como somar texto com número. ValueError: o tipo estava certo mas o valor não serve, como int de uma palavra. E ZeroDivisionError, que dispensa explicação."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "Neste laboratório, sempre que um erro acontece aparece também uma nota em dourado explicando aquele tipo. Ela é um atalho, não uma muleta: leia primeiro a mensagem original de Python, e só depois a nota. Fora daqui, no mundo real, só existe a mensagem original."
+        }
+      ],
+      "laboratorio": {
+        "instrucao": "Há quatro linhas comentadas abaixo, cada uma com um erro diferente. Tire o # de uma por vez, rode, e leia a resposta antes de passar à próxima. O objetivo aqui não é consertar: é reconhecer.",
+        "codigo": "membros = 210\ntexto = \"35\"\n\n# print(membros + texto)     # TypeError\n# print(Membros)             # NameError\n# print(int(\"trinta\"))       # ValueError\n# print(membros / 0)         # ZeroDivisionError\n\nprint(\"Tire o # de uma linha por vez, acima.\")"
+      },
+      "exercicios": [
+        {
+          "id": "e1",
+          "tipo": "escolha",
+          "enunciado": "Ao rodar um programa, Python respondeu o texto abaixo. Qual linha do seu código causou o problema?",
+          "codigo": "Rastreamento (a última chamada é a de baixo):\n  File \"codigo.py\", line 4, in <module>\n    print(f\"Total: {totalGeral}\")\nNameError: name 'totalGeral' is not defined",
+          "opcoes": ["A linha 1", "A linha 4", "A última linha do arquivo", "Não é possível saber"],
+          "correta": 1,
+          "explicacao": "O número aparece logo depois de line. Aqui o problema está na linha 4, e o próprio rastreamento ainda mostra o trecho de código dela."
+        },
+        {
+          "id": "e2",
+          "tipo": "escolha",
+          "enunciado": "Segundo a mesma mensagem acima, qual é o problema?",
+          "codigo": "NameError: name 'totalGeral' is not defined",
+          "opcoes": [
+            "A variável totalGeral tem o valor errado",
+            "A variável totalGeral não existe — nunca foi criada, ou foi criada com outra grafia",
+            "Falta o f antes das aspas",
+            "totalGeral é um número e deveria ser texto"
+          ],
+          "correta": 1,
+          "explicacao": "NameError significa que Python nunca viu esse nome. As causas mais comuns são erro de digitação, diferença de maiúsculas, ou uso da variável antes da linha que a cria."
+        },
+        {
+          "id": "e3",
+          "tipo": "escolha",
+          "enunciado": "Este programa foi executado. O que apareceu na tela antes do erro?",
+          "codigo": "print(\"Abertura\")\nprint(\"Leitura bíblica\")\nprint(\"Pregação\"\nprint(\"Bênção\")",
+          "opcoes": [
+            "Abertura e Leitura bíblica",
+            "Abertura, Leitura bíblica e Pregação",
+            "Só Abertura",
+            "Nada"
+          ],
+          "correta": 3,
+          "explicacao": "Falta o parêntese que fecha na terceira linha, e isso é SyntaxError. Python precisa entender o arquivo inteiro antes de executar qualquer linha — como não entendeu, nada chegou a rodar."
+        },
+        {
+          "id": "e4",
+          "tipo": "escolha",
+          "enunciado": "Qual destes é ValueError, e não outro tipo de erro?",
+          "opcoes": [
+            "int(\"quarenta\")",
+            "\"total: \" + 40",
+            "40 / 0",
+            "print(totall)"
+          ],
+          "correta": 0,
+          "explicacao": "Em int(\"quarenta\") o tipo está certo — int espera mesmo um texto — mas o valor não representa um número, e isso é ValueError. O segundo caso é TypeError, o terceiro ZeroDivisionError e o quarto NameError."
+        },
+        {
+          "id": "e5",
+          "tipo": "codigo",
+          "enunciado": "Este código tem três erros, de três tipos diferentes. Conserte-o para que mostre as linhas esperadas. Rode quantas vezes precisar: os erros aparecem um de cada vez.",
+          "mostraEsperado": true,
+          "inicial": "titulo = \"Relatório do domingo\"\nmembros = 210\nvisitantes = \"35\"\n\nprint(Titulo)\nprint(f\"Presentes: {membros + visitantes}\"",
+          "verificacao": "saida",
+          "esperado": "Relatório do domingo\nPresentes: 245",
+          "dica": "Comece pelo erro que impede tudo de rodar: falta um parêntese fechando na última linha. Depois virá o NameError, por causa do T maiúsculo. Por último o TypeError, que se resolve com int() ao redor de visitantes.",
+          "solucao": "titulo = \"Relatório do domingo\"\nmembros = 210\nvisitantes = \"35\"\n\nprint(titulo)\nprint(f\"Presentes: {membros + int(visitantes)}\")"
+        }
+      ]
+    },
+
+    {
+      "id": "m01l05",
+      "numero": 5,
+      "titulo": "Recapitulação",
+      "resumo": "Nenhum conceito novo. Só o que você já sabe, misturado e aplicado a um caso inteiro.",
+      "conceito": [
+        {
+          "tipo": "texto",
+          "conteudo": "Esta lição não traz nada novo. Ela existe porque conhecimento que não é reusado se apaga, e porque as quatro lições anteriores ensinaram peças separadas que agora precisam trabalhar juntas."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Vale recapitular o que você já domina. Você sabe mostrar coisas na tela com print, e sabe que texto vai entre aspas. Sabe guardar valores em variáveis, e que o sinal de igual é uma ordem, não uma afirmação. Distingue str, int e float, e sabe converter entre eles. Faz contas, inclusive as divisões inteira e com resto. Monta frases com f-string. E sabe ler uma mensagem de erro começando pela última linha."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "# Tudo do módulo, num só bloco\n\nigreja = \"Igreja Vidas\"\nmembros = 210\nofertaTexto = \"1840.75\"\n\noferta = float(ofertaTexto)\nporMembro = oferta / membros\n\nprint(f\"{igreja} — relatório\")\nprint(f\"Membros: {membros}\")\nprint(f\"Oferta total: R$ {oferta}\")\nprint(f\"Média por membro: R$ {porMembro}\")",
+          "nota": "Leia linha por linha e identifique o que cada uma faz. Se alguma parecer estranha, vale voltar à lição correspondente antes de seguir."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "Repare que a média sai com um monte de casas decimais. Isso incomoda, e tem conserto — mas o conserto é assunto do Módulo 7, quando você aprender a formatar números. Por ora, conviva com a feiura: ela é honesta."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Os exercícios a seguir misturam tudo. Alguns pedem que você leia código e diga o resultado; outros pedem que você escreva do zero. O último é um relatório inteiro, do tipo que você poderia realmente usar numa segunda-feira de manhã."
+        }
+      ],
+      "laboratorio": {
+        "instrucao": "Um espaço em branco, de propósito. Escreva qualquer coisa que use pelo menos uma variável, uma conta e uma f-string. Não há resposta certa: é só para aquecer antes dos exercícios.",
+        "codigo": "# Escreva o que quiser aqui.\n# Sugestão: calcule quantos domingos faltam até o Natal.\n\n"
+      },
+      "exercicios": [
+        {
+          "id": "e1",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "a = 7\nb = 2\n\nprint(a // b, a % b, a / b)",
+          "opcoes": ["3 1 3.5", "3.5 3.5 3.5", "3 1 3", "1 3 3.5"],
+          "correta": 0,
+          "explicacao": "A barra dupla dá a divisão inteira, 3. O sinal de porcentagem dá o resto, 1. A barra simples dá 3.5. Um print pode mostrar vários valores separados por vírgula, e ele os exibe lado a lado."
+        },
+        {
+          "id": "e2",
+          "tipo": "escolha",
+          "enunciado": "Supondo que a variável cultos guarde o número 3, qual destas linhas mostra exatamente: Foram 3 cultos",
+          "opcoes": [
+            "print(\"Foram cultos\", 3)",
+            "print(f\"Foram {cultos} cultos\")",
+            "print(\"Foram \" + 3 + \" cultos\")",
+            "print(f\"Foram cultos\")"
+          ],
+          "correta": 1,
+          "explicacao": "A f-string troca as chaves pelo valor da variável. A terceira opção daria TypeError, porque tenta emendar um número a um texto sem converter."
+        },
+        {
+          "id": "e3",
+          "tipo": "escolha",
+          "enunciado": "Este código tem um erro. Qual é o tipo dele?",
+          "codigo": "capacidade = \"120\"\npresentes = 143\n\nprint(presentes - capacidade)",
+          "opcoes": ["SyntaxError", "NameError", "TypeError", "ValueError"],
+          "correta": 2,
+          "explicacao": "A escrita está perfeita e os dois nomes existem. O problema é tentar subtrair um texto de um número: tipos incompatíveis, portanto TypeError. Bastaria int(capacidade)."
+        },
+        {
+          "id": "e4",
+          "tipo": "codigo",
+          "enunciado": "Um culto durou 95 minutos. Calcule quantas horas inteiras e quantos minutos restantes ele durou, guardando nas variáveis horas e minutos.",
+          "inicial": "duracao = 95\n\n# escreva as duas linhas aqui",
+          "verificacao": "expressao",
+          "testes": [
+            { "rotulo": "horas", "chamada": "horas", "esperado": "1" },
+            { "rotulo": "minutos", "chamada": "minutos", "esperado": "35" }
+          ],
+          "dica": "São exatamente as duas operações da lição 3: a barra dupla por 60 dá as horas inteiras, e o sinal de porcentagem por 60 dá os minutos que sobram.",
+          "solucao": "duracao = 95\n\nhoras = duracao // 60\nminutos = duracao % 60"
+        },
+        {
+          "id": "e5",
+          "tipo": "codigo",
+          "enunciado": "Os dados chegaram como texto, do jeito que vêm de uma planilha. Converta-os e calcule a variável percentual, que é quantos por cento dos membros estiveram presentes.",
+          "inicial": "membrosTexto = \"200\"\npresentesTexto = \"143\"\n\n# converta e calcule",
+          "verificacao": "expressao",
+          "testes": [
+            { "rotulo": "percentual", "chamada": "percentual", "esperado": "71.5" }
+          ],
+          "dica": "Converta os dois com int(). Depois percentual = presentes / membros * 100. A ordem funciona porque divisão e multiplicação são resolvidas da esquerda para a direita.",
+          "solucao": "membrosTexto = \"200\"\npresentesTexto = \"143\"\n\nmembros = int(membrosTexto)\npresentes = int(presentesTexto)\n\npercentual = presentes / membros * 100"
+        },
+        {
+          "id": "e6",
+          "tipo": "codigo",
+          "enunciado": "O relatório de domingo. Use os dados fornecidos e monte a saída exatamente como esperada — quatro linhas.",
+          "mostraEsperado": true,
+          "inicial": "igreja = \"Igreja Vidas\"\nmembros = 200\npresentes = 143\nofertaTexto = \"1840.00\"\n\n# monte o relatório aqui",
+          "verificacao": "saida",
+          "esperado": "Igreja Vidas — Relatório\nPresentes: 143 de 200\nFrequência: 71.5%\nOferta por presente: R$ 12.867132867132867",
+          "dica": "São quatro prints. A frequência é presentes / membros * 100. A oferta por presente é float(ofertaTexto) / presentes. Não arredonde nada: deixe o número sair como Python o produz, com todas as casas. O travessão da primeira linha você copia do quadro de saída esperada.",
+          "solucao": "igreja = \"Igreja Vidas\"\nmembros = 200\npresentes = 143\nofertaTexto = \"1840.00\"\n\nfrequencia = presentes / membros * 100\nporPresente = float(ofertaTexto) / presentes\n\nprint(f\"{igreja} — Relatório\")\nprint(f\"Presentes: {presentes} de {membros}\")\nprint(f\"Frequência: {frequencia}%\")\nprint(f\"Oferta por presente: R$ {porPresente}\")"
+        }
+      ]
+    }
   ]
 }
