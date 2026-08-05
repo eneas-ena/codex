@@ -1041,8 +1041,11 @@ function telaConceito(){
     b.addEventListener("click", async function(){
       var i = Number(b.dataset.rodar);
       var caixa = app.querySelector('.exemplo[data-ex="' + i + '"]');
-      var pre = caixa.querySelector(".mini-saida") || el('<pre class="mini-saida"></pre>');
-      if (!pre.parentNode) caixa.appendChild(pre);
+      var pre = caixa.querySelector(".mini-saida");
+      if (!pre){
+        pre = document.createElement("pre");
+        caixa.appendChild(pre);
+      }
       pre.className = "mini-saida";
       pre.textContent = "…";
 
