@@ -6,382 +6,268 @@
 <meta name="theme-color" content="#0F1B33">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>CODEX — Laboratório Python</title>
+<title>CODEX — Python</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 
 <style>
 :root{
-  --tinta:      #0F1B33;
-  --tinta-alta: #16243F;
-  --tinta-baixa:#0A1326;
-  --linha:      #24344F;
-  --ouro:       #C9A227;
-  --ouro-fraco: #8A701A;
-  --pergaminho: #E8E4D9;
-  --neblina:    #93A1B8;
-  --verde:      #74C39A;
-  --rubro:      #E8837E;
-  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --tinta:#0F1B33; --tinta-alta:#16243F; --tinta-baixa:#0A1326;
+  --linha:#24344F; --ouro:#C9A227; --ouro-fraco:#8A701A;
+  --pergaminho:#E8E4D9; --neblina:#93A1B8;
+  --verde:#74C39A; --verde-fundo:rgba(116,195,154,.10);
+  --rubro:#E8837E; --rubro-fundo:rgba(232,131,126,.10);
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --serif:"Cormorant Garamond",Georgia,serif;
+  --display:"Cinzel",serif;
 }
-
-*{ box-sizing:border-box; }
-
-html,body{ height:100%; }
-
+*{box-sizing:border-box}
+html,body{height:100%}
 body{
-  margin:0;
-  background:var(--tinta);
-  color:var(--pergaminho);
-  font-family:"Cormorant Garamond", Georgia, serif;
-  font-size:17px;
-  display:flex;
-  flex-direction:column;
-  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  margin:0;background:var(--tinta);color:var(--pergaminho);
+  font-family:var(--serif);font-size:18px;line-height:1.6;
+  display:flex;flex-direction:column;
   -webkit-text-size-adjust:100%;
 }
+button{font-family:inherit}
+a{color:var(--ouro)}
 
-/* ---------- Cabeçalho ---------- */
-
+/* ---------------- Cabeçalho ---------------- */
 header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:12px 18px;
-  border-bottom:1px solid var(--linha);
-  background:var(--tinta-baixa);
-  flex-wrap:wrap;
+  display:flex;align-items:center;gap:12px;
+  padding:calc(10px + env(safe-area-inset-top)) 18px 10px;
+  border-bottom:1px solid var(--linha);background:var(--tinta-baixa);
+  position:sticky;top:0;z-index:20;
 }
+.lampada{width:12px;height:12px;border-radius:50%;background:var(--linha);border:1px solid var(--ouro-fraco);flex:none;transition:background .3s,box-shadow .3s}
+body[data-motor="carregando"] .lampada{background:var(--ouro-fraco);animation:pulsar 1.5s ease-in-out infinite}
+body[data-motor="pronto"] .lampada{background:var(--ouro);box-shadow:0 0 10px rgba(201,162,39,.5)}
+body[data-motor="rodando"] .lampada{background:var(--verde);box-shadow:0 0 10px rgba(116,195,154,.5);animation:pulsar .9s ease-in-out infinite}
+body[data-motor="falha"] .lampada{background:var(--rubro)}
+@keyframes pulsar{0%,100%{opacity:1}50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.lampada{animation:none!important}}
 
-.marca{ display:flex; align-items:center; gap:12px; }
+.titulo-topo{font-family:var(--display);font-size:15px;letter-spacing:.16em;font-weight:600;flex:1;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.voltar{background:none;border:0;color:var(--neblina);font-size:22px;cursor:pointer;padding:0 6px;line-height:1}
+.voltar:hover{color:var(--ouro)}
+.nota-topo{font-size:14px;color:var(--neblina);font-style:italic;white-space:nowrap}
+@media (max-width:620px){.nota-topo{display:none}}
 
-.marca h1{
-  font-family:"Cinzel", serif;
-  font-size:19px;
-  font-weight:600;
-  letter-spacing:.16em;
-  margin:0;
-  color:var(--pergaminho);
+/* ---------------- Estrutura ---------------- */
+#app{flex:1;min-height:0;overflow-y:auto;padding-bottom:calc(30px + env(safe-area-inset-bottom))}
+.folha{max-width:760px;margin:0 auto;padding:26px 20px 0}
+.folha.larga{max-width:920px}
+
+h2.secao{font-family:var(--display);font-size:22px;letter-spacing:.06em;font-weight:600;margin:0 0 4px}
+p.legenda{color:var(--neblina);font-style:italic;margin:0 0 26px}
+
+/* ---------------- Aviso ---------------- */
+.faixa{padding:10px 18px;background:rgba(232,131,126,.12);border-bottom:1px solid rgba(232,131,126,.3);
+  color:var(--rubro);font-size:15px;font-style:italic;text-align:center}
+
+/* ---------------- PIN ---------------- */
+.pin-caixa{max-width:360px;margin:12vh auto 0;padding:0 24px;text-align:center}
+.pin-caixa h2{font-family:var(--display);font-size:20px;letter-spacing:.12em;margin:0 0 8px}
+.pin-caixa p{color:var(--neblina);font-style:italic;margin:0 0 26px;font-size:16px}
+#pin{width:100%;text-align:center;font-family:var(--mono);font-size:30px;letter-spacing:.5em;
+  padding:14px 0 14px .5em;background:var(--tinta-alta);border:1px solid var(--linha);
+  border-radius:8px;color:var(--pergaminho);outline:none}
+#pin:focus{border-color:var(--ouro)}
+.pin-erro{color:var(--rubro);font-size:15px;font-style:italic;min-height:22px;margin-top:12px}
+
+/* ---------------- Cartões da trilha ---------------- */
+.cartao{
+  display:block;width:100%;text-align:left;
+  background:var(--tinta-alta);border:1px solid var(--linha);border-left:3px solid var(--linha);
+  border-radius:8px;padding:16px 18px;margin-bottom:12px;cursor:pointer;color:inherit;
+  transition:border-color .2s,transform .15s;
 }
+.cartao:hover:not(:disabled){border-color:var(--ouro-fraco);border-left-color:var(--ouro);transform:translateX(2px)}
+.cartao:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+.cartao[data-estado="concluida"]{border-left-color:var(--verde)}
+.cartao[data-estado="andamento"]{border-left-color:var(--ouro)}
+.cartao:disabled{opacity:.42;cursor:not-allowed}
+.cartao .numero{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--ouro-fraco);text-transform:uppercase}
+.cartao h3{font-family:var(--display);font-size:18px;font-weight:600;letter-spacing:.03em;margin:5px 0 5px}
+.cartao p{margin:0;color:var(--neblina);font-size:16px;font-style:italic}
+.cartao .rodape{display:flex;justify-content:space-between;align-items:center;margin-top:12px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--neblina)}
+.barra{height:3px;background:var(--linha);border-radius:2px;margin-top:9px;overflow:hidden}
+.barra i{display:block;height:100%;background:var(--ouro);transition:width .4s}
+.cartao[data-estado="concluida"] .barra i{background:var(--verde)}
 
-.marca h1 small{
-  display:block;
-  font-family:"Cormorant Garamond", serif;
-  font-size:13px;
-  letter-spacing:.06em;
-  font-style:italic;
-  color:var(--neblina);
-  font-weight:400;
-}
+.futuro{margin-top:30px;padding-top:18px;border-top:1px solid var(--linha)}
+.futuro span{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:#3E5170;margin-bottom:10px}
+.futuro li{color:#3E5170;font-style:italic;list-style:none;padding:3px 0}
+.futuro ul{margin:0;padding:0}
 
-/* A lâmpada: o elemento que conta o estado do motor Python */
-.lampada{
-  width:13px; height:13px;
-  border-radius:50%;
-  background:var(--linha);
-  border:1px solid var(--ouro-fraco);
-  flex:none;
-  transition:background .3s, box-shadow .3s;
-}
-body[data-estado="carregando"] .lampada{
-  background:var(--ouro-fraco);
-  animation:pulsar 1.5s ease-in-out infinite;
-}
-body[data-estado="pronto"]   .lampada{ background:var(--ouro); box-shadow:0 0 12px rgba(201,162,39,.55); }
-body[data-estado="rodando"]  .lampada{ background:var(--verde); box-shadow:0 0 12px rgba(116,195,154,.55); animation:pulsar .9s ease-in-out infinite; }
-body[data-estado="falha"]    .lampada{ background:var(--rubro); box-shadow:0 0 12px rgba(232,131,126,.5); }
+/* ---------------- Passos ---------------- */
+.passos{display:flex;gap:0;border-bottom:1px solid var(--linha);margin:0 0 26px}
+.passos button{flex:1;background:none;border:0;border-bottom:2px solid transparent;
+  color:var(--neblina);font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;padding:11px 4px;cursor:pointer}
+.passos button[aria-selected="true"]{color:var(--ouro);border-bottom-color:var(--ouro)}
+.passos button:disabled{opacity:.35;cursor:not-allowed}
 
-@keyframes pulsar{ 0%,100%{ opacity:1 } 50%{ opacity:.35 } }
-@media (prefers-reduced-motion:reduce){ .lampada{ animation:none !important; } }
+/* ---------------- Blocos do conceito ---------------- */
+.bloco-texto{margin:0 0 20px}
+.bloco-aviso{margin:0 0 22px;padding:14px 18px;border-left:2px solid var(--ouro);
+  background:rgba(201,162,39,.06);color:var(--pergaminho);font-style:italic}
+.exemplo{margin:0 0 22px;border:1px solid var(--linha);border-radius:8px;overflow:hidden;background:var(--tinta-baixa)}
+.exemplo pre{margin:0;padding:14px 16px;font-family:var(--mono);font-size:13.5px;line-height:1.7;
+  white-space:pre-wrap;word-break:break-word;color:var(--pergaminho);overflow-x:auto}
+.exemplo .nota{padding:10px 16px;border-top:1px solid var(--linha);color:var(--neblina);
+  font-size:15.5px;font-style:italic}
+.exemplo .barra-exemplo{display:flex;justify-content:flex-end;padding:7px 10px;border-top:1px solid var(--linha)}
+.exemplo .mini{background:none;border:1px solid var(--linha);color:var(--neblina);border-radius:5px;
+  padding:4px 12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.exemplo .mini:hover{border-color:var(--ouro);color:var(--ouro)}
+.mini-saida{margin:0;padding:10px 16px;border-top:1px solid var(--linha);background:var(--tinta);
+  font-family:var(--mono);font-size:13px;line-height:1.65;white-space:pre-wrap;word-break:break-word;color:var(--verde)}
+.mini-saida.ruim{color:var(--rubro)}
 
-#estado{
-  font-size:14px;
-  color:var(--neblina);
-  font-style:italic;
-}
+/* Destaque de sintaxe estático */
+.tk-key{color:#E4A6C8}.tk-str{color:var(--verde)}.tk-num{color:#F0B87A}
+.tk-com{color:#5C6E8C;font-style:italic}.tk-fun{color:#8FC5F0}
 
-/* ---------- Exemplos ---------- */
+/* ---------------- Editor ---------------- */
+.moldura{border:1px solid var(--linha);border-radius:8px;overflow:hidden;margin-bottom:14px;background:var(--tinta-baixa)}
+.moldura .cabeca{display:flex;justify-content:space-between;align-items:center;padding:7px 14px;
+  border-bottom:1px solid var(--linha);font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--neblina)}
+.CodeMirror{height:auto!important;min-height:150px;font-family:var(--mono)!important;font-size:14px;
+  line-height:1.7;background:var(--tinta-baixa);color:var(--pergaminho);padding:6px 0}
+.cm-s-vidas .CodeMirror-gutters{background:var(--tinta-baixa);border-right:1px solid var(--linha)}
+.cm-s-vidas .CodeMirror-linenumber{color:#3E5170;font-size:12px}
+.cm-s-vidas .CodeMirror-cursor{border-left:2px solid var(--ouro)}
+.cm-s-vidas .CodeMirror-selected{background:rgba(201,162,39,.18)}
+.cm-s-vidas .CodeMirror-activeline-background{background:rgba(255,255,255,.03)}
+.cm-s-vidas .cm-keyword{color:#E4A6C8;font-weight:500}
+.cm-s-vidas .cm-builtin{color:#8FC5F0}
+.cm-s-vidas .cm-def{color:var(--ouro)}
+.cm-s-vidas .cm-variable{color:var(--pergaminho)}
+.cm-s-vidas .cm-variable-2{color:#B8CDE8}
+.cm-s-vidas .cm-string{color:var(--verde)}
+.cm-s-vidas .cm-number{color:#F0B87A}
+.cm-s-vidas .cm-comment{color:#5C6E8C;font-style:italic}
+.cm-s-vidas .cm-operator{color:var(--neblina)}
+textarea.simples{width:100%;min-height:170px;background:var(--tinta-baixa);color:var(--pergaminho);
+  border:0;resize:vertical;padding:12px 14px;font-family:var(--mono);font-size:14px;line-height:1.7;outline:none;display:block}
 
-.exemplos{
-  display:flex;
-  gap:8px;
-  padding:10px 18px;
-  overflow-x:auto;
-  border-bottom:1px solid var(--linha);
-  scrollbar-width:none;
-}
-.exemplos::-webkit-scrollbar{ display:none; }
+.simbolos{display:flex;gap:6px;padding:8px 10px;overflow-x:auto;border-top:1px solid var(--linha);
+  background:var(--tinta-alta);scrollbar-width:none}
+.simbolos::-webkit-scrollbar{display:none}
+.simbolos button{flex:none;min-width:38px;height:36px;padding:0 9px;background:var(--tinta-baixa);
+  border:1px solid var(--linha);border-radius:7px;color:var(--pergaminho);font-family:var(--mono);
+  font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.simbolos button:active{background:var(--ouro-fraco)}
+.simbolos .setas{border-color:var(--ouro-fraco);color:var(--ouro)}
 
-.exemplos button{
-  flex:none;
-  background:transparent;
-  border:1px solid var(--linha);
-  color:var(--neblina);
-  border-radius:999px;
-  padding:5px 14px;
-  font-family:"Cormorant Garamond", serif;
-  font-size:15px;
-  cursor:pointer;
-  white-space:nowrap;
-  transition:border-color .2s, color .2s;
-}
-.exemplos button:hover{ border-color:var(--ouro); color:var(--pergaminho); }
-.exemplos button:focus-visible{ outline:2px solid var(--ouro); outline-offset:2px; }
+/* ---------------- Botões ---------------- */
+.acoes{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+button.acao{font-family:var(--display);font-size:12.5px;letter-spacing:.1em;padding:10px 20px;
+  border-radius:6px;cursor:pointer;border:1px solid var(--ouro-fraco);background:transparent;color:var(--ouro);
+  transition:background .2s,opacity .2s}
+button.acao:hover:not(:disabled){background:rgba(201,162,39,.12)}
+button.acao:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+button.acao:disabled{opacity:.35;cursor:not-allowed}
+button.acao.principal{background:var(--ouro);color:var(--tinta);border-color:var(--ouro);font-weight:600}
+button.acao.principal:hover:not(:disabled){background:#DCB43A}
+button.acao.discreta{border-color:var(--linha);color:var(--neblina)}
+button.acao.discreta:hover:not(:disabled){background:rgba(255,255,255,.05);color:var(--pergaminho)}
+.espaco{margin-left:auto}
 
-/* ---------- Painéis ---------- */
+/* ---------------- Exercícios ---------------- */
+.pontos{display:flex;gap:7px;align-items:center;margin-bottom:20px}
+.pontos i{width:9px;height:9px;border-radius:50%;background:var(--linha);display:block}
+.pontos i.feito{background:var(--verde)}
+.pontos i.atual{background:var(--ouro);transform:scale(1.35)}
+.pontos em{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  color:var(--neblina);font-style:normal}
 
-main{
-  flex:1;
-  min-height:0;
-  display:grid;
-  grid-template-rows:minmax(250px,1.15fr) minmax(170px,1fr);
-  gap:1px;
-  background:var(--linha);
-}
+.enunciado{font-size:19px;margin:0 0 18px}
+.esperado-caixa{border:1px dashed var(--ouro-fraco);border-radius:8px;padding:12px 16px;margin-bottom:18px;background:rgba(201,162,39,.05)}
+.esperado-caixa span{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ouro-fraco);margin-bottom:7px}
+.esperado-caixa pre{margin:0;font-family:var(--mono);font-size:13.5px;line-height:1.7;
+  white-space:pre-wrap;word-break:break-word;color:var(--pergaminho)}
 
-@media (min-width:940px){
-  main{
-    grid-template-rows:1fr;
-    grid-template-columns:1.05fr 1fr;
-  }
-}
+.opcao{display:block;width:100%;text-align:left;background:var(--tinta-alta);border:1px solid var(--linha);
+  border-radius:8px;padding:13px 16px;margin-bottom:9px;color:var(--pergaminho);font-family:var(--mono);
+  font-size:14px;cursor:pointer;transition:border-color .18s,background .18s}
+.opcao:hover:not(:disabled){border-color:var(--ouro-fraco)}
+.opcao[aria-pressed="true"]{border-color:var(--ouro);background:rgba(201,162,39,.10)}
+.opcao.certa{border-color:var(--verde);background:var(--verde-fundo)}
+.opcao.errada{border-color:var(--rubro);background:var(--rubro-fundo)}
+.opcao:disabled{cursor:default}
 
-.painel{
-  background:var(--tinta);
-  display:flex;
-  flex-direction:column;
-  min-height:0;
-  min-width:0;
-}
+/* ---------------- Retorno ---------------- */
+.retorno{border-radius:8px;padding:16px 18px;margin-bottom:18px;border:1px solid var(--linha)}
+.retorno.bom{border-color:rgba(116,195,154,.45);background:var(--verde-fundo)}
+.retorno.mau{border-color:rgba(232,131,126,.4);background:var(--rubro-fundo)}
+.retorno h4{font-family:var(--display);font-size:14px;letter-spacing:.1em;margin:0 0 9px;font-weight:600}
+.retorno.bom h4{color:var(--verde)}
+.retorno.mau h4{color:var(--rubro)}
+.retorno p{margin:0 0 6px;font-size:17px}
+.retorno pre{margin:8px 0 0;font-family:var(--mono);font-size:13px;line-height:1.65;
+  white-space:pre-wrap;word-break:break-word;color:var(--rubro)}
+.glosa{margin:12px 0 0;padding:9px 0 9px 14px;border-left:2px solid var(--ouro);color:var(--ouro);font-style:italic;font-size:16.5px}
 
-.rotulo{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:8px 18px;
-  font-family:var(--mono);
-  font-size:11px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--neblina);
-  border-bottom:1px solid var(--linha);
-  background:var(--tinta-baixa);
-}
-.rotulo span{ color:var(--ouro-fraco); font-size:11px; letter-spacing:.08em; text-transform:none; }
+.testes{width:100%;border-collapse:collapse;margin-top:12px;font-family:var(--mono);font-size:12.5px}
+.testes th{text-align:left;font-weight:400;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--neblina);padding:0 10px 7px 0;border-bottom:1px solid var(--linha)}
+.testes td{padding:8px 10px 8px 0;border-bottom:1px solid var(--linha);vertical-align:top;
+  white-space:pre-wrap;word-break:break-word}
+.testes td.marca{width:20px;font-size:14px}
+.testes tr.ok td.marca{color:var(--verde)}
+.testes tr.nao td.marca{color:var(--rubro)}
+.testes td.obtido{color:var(--rubro)}
+.testes tr.ok td.obtido{color:var(--verde)}
 
-.area-editor{ flex:1; min-height:0; overflow:hidden; position:relative; }
+.saida-caixa{margin:0 0 18px;border:1px solid var(--linha);border-radius:8px;overflow:hidden}
+.saida-caixa span{display:block;padding:7px 14px;border-bottom:1px solid var(--linha);background:var(--tinta-baixa);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--neblina)}
+.saida-caixa pre{margin:0;padding:12px 14px;font-family:var(--mono);font-size:13.5px;line-height:1.7;
+  white-space:pre-wrap;word-break:break-word;min-height:44px}
+.saida-caixa pre .err{color:var(--rubro)}
+.saida-caixa pre .vazio{color:#3E5170;font-family:var(--serif);font-style:italic;font-size:16px}
 
-/* ---------- CodeMirror, tema "vidas" ---------- */
+/* ---------------- Conclusão ---------------- */
+.fim{text-align:center;padding:8vh 0 0}
+.fim .selo{font-family:var(--display);font-size:44px;color:var(--ouro);letter-spacing:.1em}
+.fim h3{font-family:var(--display);font-size:20px;letter-spacing:.08em;margin:16px 0 8px}
+.fim p{color:var(--neblina);font-style:italic;margin:0 0 28px}
 
-.CodeMirror{
-  height:100% !important;
-  font-family:var(--mono) !important;
-  font-size:14px;
-  line-height:1.65;
-  background:var(--tinta);
-  color:var(--pergaminho);
-}
-.cm-s-vidas .CodeMirror-gutters{ background:var(--tinta-baixa); border-right:1px solid var(--linha); }
-.cm-s-vidas .CodeMirror-linenumber{ color:#3E5170; font-size:12px; }
-.cm-s-vidas .CodeMirror-cursor{ border-left:2px solid var(--ouro); }
-.cm-s-vidas .CodeMirror-selected{ background:rgba(201,162,39,.18); }
-.cm-s-vidas .CodeMirror-line::selection,
-.cm-s-vidas .CodeMirror-line > span::selection{ background:rgba(201,162,39,.25); }
-.cm-s-vidas .CodeMirror-activeline-background{ background:rgba(255,255,255,.03); }
-
-.cm-s-vidas .cm-keyword  { color:#E4A6C8; font-weight:500; }
-.cm-s-vidas .cm-builtin   { color:#8FC5F0; }
-.cm-s-vidas .cm-def       { color:var(--ouro); }
-.cm-s-vidas .cm-variable  { color:var(--pergaminho); }
-.cm-s-vidas .cm-variable-2{ color:#B8CDE8; }
-.cm-s-vidas .cm-string    { color:var(--verde); }
-.cm-s-vidas .cm-number    { color:#F0B87A; }
-.cm-s-vidas .cm-comment   { color:#5C6E8C; font-style:italic; }
-.cm-s-vidas .cm-operator  { color:var(--neblina); }
-.cm-s-vidas .cm-error     { color:var(--rubro); }
-
-/* Reserva para o fallback em textarea */
-#codigo-simples{
-  width:100%; height:100%;
-  background:var(--tinta);
-  color:var(--pergaminho);
-  border:0;
-  resize:none;
-  padding:12px 18px;
-  font-family:var(--mono);
-  font-size:14px;
-  line-height:1.65;
-  outline:none;
-  display:none;
-}
-
-/* ---------- Barra de símbolos ---------- */
-
-.simbolos{
-  display:flex;
-  gap:6px;
-  padding:8px 12px;
-  overflow-x:auto;
-  border-top:1px solid var(--linha);
-  background:var(--tinta-baixa);
-  scrollbar-width:none;
-}
-.simbolos::-webkit-scrollbar{ display:none; }
-
-.simbolos button{
-  flex:none;
-  min-width:38px;
-  height:36px;
-  padding:0 9px;
-  background:var(--tinta-alta);
-  border:1px solid var(--linha);
-  border-radius:7px;
-  color:var(--pergaminho);
-  font-family:var(--mono);
-  font-size:14px;
-  cursor:pointer;
-  -webkit-tap-highlight-color:transparent;
-}
-.simbolos button:active{ background:var(--ouro-fraco); }
-.simbolos button:focus-visible{ outline:2px solid var(--ouro); outline-offset:1px; }
-
-/* ---------- Ações ---------- */
-
-.acoes{
-  display:flex;
-  gap:10px;
-  padding:12px 18px;
-  border-top:1px solid var(--linha);
-  align-items:center;
-}
-
-button.acao{
-  font-family:"Cinzel", serif;
-  font-size:13px;
-  letter-spacing:.1em;
-  padding:10px 22px;
-  border-radius:6px;
-  cursor:pointer;
-  border:1px solid var(--ouro-fraco);
-  background:transparent;
-  color:var(--ouro);
-  transition:background .2s, color .2s, opacity .2s;
-}
-button.acao:hover:not(:disabled){ background:rgba(201,162,39,.12); }
-button.acao:focus-visible{ outline:2px solid var(--ouro); outline-offset:2px; }
-button.acao:disabled{ opacity:.35; cursor:not-allowed; }
-
-button.acao.principal{ background:var(--ouro); color:var(--tinta); border-color:var(--ouro); font-weight:600; }
-button.acao.principal:hover:not(:disabled){ background:#DCB43A; }
-
-button.acao.discreta{ border-color:var(--linha); color:var(--neblina); }
-button.acao.discreta:hover:not(:disabled){ background:rgba(255,255,255,.05); color:var(--pergaminho); }
-
-.atalho{ margin-left:auto; font-size:13px; color:#4A5C7A; font-style:italic; }
-@media (max-width:600px){ .atalho{ display:none; } }
-
-/* ---------- Saída ---------- */
-
-#saida{
-  flex:1;
-  min-height:0;
-  overflow:auto;
-  margin:0;
-  padding:14px 18px 20px;
-  font-family:var(--mono);
-  font-size:13.5px;
-  line-height:1.7;
-  white-space:pre-wrap;
-  word-break:break-word;
-}
-
-#saida .l-out{ color:var(--pergaminho); }
-#saida .l-err{ color:var(--rubro); }
-#saida .l-nota{ color:var(--neblina); font-family:"Cormorant Garamond",serif; font-size:16px; font-style:italic; }
-#saida .l-ok  { color:var(--verde); font-family:"Cormorant Garamond",serif; font-size:16px; font-style:italic; }
-
-/* A glosa: a dica pedagógica na margem, como um comentário marginal de manuscrito */
-#saida .glosa{
-  display:block;
-  margin:10px 0 4px;
-  padding:8px 0 8px 14px;
-  border-left:2px solid var(--ouro);
-  color:var(--ouro);
-  font-family:"Cormorant Garamond", serif;
-  font-size:16.5px;
-  font-style:italic;
-  white-space:normal;
-}
-
-#saida .vazio{ color:#3E5170; font-family:"Cormorant Garamond",serif; font-style:italic; font-size:16px; }
-
-/* ---------- Rodapé ---------- */
-
-footer{
-  padding:9px 18px calc(9px + env(safe-area-inset-bottom));
-  border-top:1px solid var(--linha);
-  background:var(--tinta-baixa);
-  font-family:var(--mono);
-  font-size:10.5px;
-  letter-spacing:.05em;
-  color:#3E5170;
-  display:flex;
-  gap:16px;
-  flex-wrap:wrap;
-}
+footer{padding:9px 18px calc(9px + env(safe-area-inset-bottom));border-top:1px solid var(--linha);
+  background:var(--tinta-baixa);font-family:var(--mono);font-size:10px;letter-spacing:.05em;
+  color:#3E5170;display:flex;gap:16px;flex-wrap:wrap}
 </style>
 </head>
 
-<body data-estado="carregando">
+<body data-motor="carregando">
 
 <header>
-  <div class="marca">
-    <span class="lampada" aria-hidden="true"></span>
-    <h1>CODEX<small>Laboratório Python — Fase 1</small></h1>
-  </div>
-  <div id="estado" role="status" aria-live="polite">Acordando o motor…</div>
+  <button class="voltar" id="btnVoltar" style="display:none" aria-label="Voltar">‹</button>
+  <span class="lampada" aria-hidden="true"></span>
+  <span class="titulo-topo" id="tituloTopo">CODEX</span>
+  <span class="nota-topo" id="notaTopo">iniciando…</span>
 </header>
 
-<nav class="exemplos" id="exemplos" aria-label="Exemplos"></nav>
-
-<main>
-  <section class="painel">
-    <div class="rotulo">codigo.py</div>
-    <div class="area-editor">
-      <textarea id="codigo" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off"></textarea>
-      <textarea id="codigo-simples" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off"></textarea>
-    </div>
-    <div class="simbolos" id="simbolos" aria-label="Símbolos"></div>
-    <div class="acoes">
-      <button class="acao principal" id="btnRodar" disabled>Executar</button>
-      <button class="acao" id="btnParar" disabled>Parar</button>
-      <button class="acao discreta" id="btnLimpar">Limpar saída</button>
-      <span class="atalho">⌘ + Enter</span>
-    </div>
-  </section>
-
-  <section class="painel">
-    <div class="rotulo">Saída <span id="cronometro"></span></div>
-    <pre id="saida" aria-live="polite"><span class="vazio">A saída do seu código aparece aqui.</span></pre>
-  </section>
-</main>
+<div id="app"></div>
 
 <footer>
-  <span id="diag-versao">motor: —</span>
-  <span id="diag-tempo">carga: —</span>
-  <span id="diag-editor">editor: —</span>
+  <span id="diagMotor">motor: —</span>
+  <span id="diagBanco">banco: —</span>
 </footer>
 
 
-<!-- ============================================================
-     Código do Web Worker. Fica aqui como texto puro e é
-     transformado em Blob para que todo o app caiba num só arquivo.
-     ============================================================ -->
-<script id="fonte-worker" type="text/plain">
+<!-- ===================== Worker do Python ===================== -->
+<script id="fonteWorker" type="text/plain">
 const BUILDS = [
   "https://cdn.jsdelivr.net/pyodide/v314.0.3/full/",
   "https://cdn.jsdelivr.net/pyodide/v0.28.3/full/"
@@ -390,95 +276,143 @@ const BUILDS = [
 let py = null;
 let prontoPromise = null;
 
-function avisar(tipo, dados){
-  self.postMessage(Object.assign({ tipo: tipo }, dados || {}));
-}
+function avisar(tipo, dados){ self.postMessage(Object.assign({ tipo }, dados || {})); }
 
-const PREPARO = [
-  "import builtins, sys, traceback",
-  "",
-  "def _sem_input(prompt=''):",
-  "    raise RuntimeError('Neste laboratorio nao usamos input(). Escreva uma funcao que recebe parametros e devolve um valor.')",
-  "",
-  "builtins.input = _sem_input",
-  "",
-  "def _executar(_fonte):",
-  "    import linecache",
-  "    linecache.cache['codigo.py'] = (len(_fonte), None, _fonte.splitlines(True), 'codigo.py')",
-  "    _amb = {'__name__': '__main__'}",
-  "    try:",
-  "        _obj = compile(_fonte, 'codigo.py', 'exec')",
-  "    except SyntaxError as _e:",
-  "        return ''.join(traceback.format_exception_only(type(_e), _e))",
-  "    try:",
-  "        exec(_obj, _amb)",
-  "    except SystemExit:",
-  "        return None",
-  "    except BaseException as _e:",
-  "        _tb = _e.__traceback__.tb_next",
-  "        return ''.join(traceback.TracebackException(type(_e), _e, _tb).format())",
-  "    return None",
-  ""
-].join("\n");
+const PREPARO = `
+import builtins, sys, json, io, contextlib, linecache, traceback
+
+def _sem_input(prompt=''):
+    raise RuntimeError('Neste laboratorio nao usamos input(). Guarde o valor direto numa variavel.')
+
+builtins.input = _sem_input
+
+def _registrar(_fonte):
+    linecache.cache['codigo.py'] = (len(_fonte), None, _fonte.splitlines(True), 'codigo.py')
+
+def _limpar(_texto):
+    return '\\n'.join([_l.rstrip() for _l in str(_texto).strip().split('\\n')])
+
+def _formatar(_e):
+    _tb = _e.__traceback__.tb_next
+    return ''.join(traceback.TracebackException(type(_e), _e, _tb).format())
+
+def _executar(_fonte):
+    _registrar(_fonte)
+    _amb = {'__name__': '__main__'}
+    try:
+        _obj = compile(_fonte, 'codigo.py', 'exec')
+    except SyntaxError as _e:
+        return ''.join(traceback.format_exception_only(type(_e), _e))
+    try:
+        exec(_obj, _amb)
+    except SystemExit:
+        return None
+    except BaseException as _e:
+        return _formatar(_e)
+    return None
+
+def _corrigir(_fonte, _testes_json):
+    _registrar(_fonte)
+    try:
+        _testes = json.loads(_testes_json)
+    except Exception:
+        _testes = []
+    _amb = {'__name__': '__main__'}
+    _saida = io.StringIO()
+    try:
+        _obj = compile(_fonte, 'codigo.py', 'exec')
+    except SyntaxError as _e:
+        return json.dumps({'erro': ''.join(traceback.format_exception_only(type(_e), _e)), 'impresso': '', 'testes': []})
+    try:
+        with contextlib.redirect_stdout(_saida):
+            exec(_obj, _amb)
+    except BaseException as _e:
+        return json.dumps({'erro': _formatar(_e), 'impresso': _saida.getvalue(), 'testes': []})
+    _resultados = []
+    for _t in _testes:
+        _item = {'rotulo': _t.get('rotulo') or _t.get('chamada') or 'saida do programa',
+                 'esperado': '', 'obtido': '', 'ok': False, 'erro': None, 'detalhe': None}
+        try:
+            if _t.get('tipo') == 'saida':
+                _esp = _limpar(_t.get('esperado', ''))
+                _obt = _limpar(_saida.getvalue())
+                _item['esperado'] = _esp
+                _item['obtido'] = _obt if _obt else '(nada foi impresso)'
+                _item['ok'] = (_obt == _esp)
+                if not _item['ok']:
+                    _le = _esp.split('\\n')
+                    _lo = _obt.split('\\n')
+                    if len(_le) != len(_lo):
+                        _item['detalhe'] = 'Esperava ' + str(len(_le)) + ' linha(s) e recebeu ' + str(len(_lo)) + '.'
+                    else:
+                        for _k in range(len(_le)):
+                            if _le[_k] != _lo[_k]:
+                                _item['detalhe'] = 'A diferença está na linha ' + str(_k + 1) + ' — compare caractere por caractere, inclusive os acentos.'
+                                break
+            else:
+                _esp = eval(_t['esperado'], {})
+                _item['esperado'] = repr(_esp)
+                _buf = io.StringIO()
+                with contextlib.redirect_stdout(_buf):
+                    _obt = eval(_t['chamada'], _amb)
+                _item['obtido'] = repr(_obt)
+                _item['ok'] = (_obt == _esp)
+                if not _item['ok'] and type(_obt) is not type(_esp):
+                    _item['detalhe'] = 'O valor é de outro tipo: esperava ' + type(_esp).__name__ + ' e recebeu ' + type(_obt).__name__ + '.'
+        except BaseException as _e:
+            _item['erro'] = ''.join(traceback.format_exception_only(type(_e), _e)).strip()
+            _item['obtido'] = '—'
+        _resultados.append(_item)
+    return json.dumps({'erro': None, 'impresso': _saida.getvalue(), 'testes': _resultados})
+`;
 
 async function ligar(){
-  let ultimoErro = null;
-
+  let ultimo = null;
   for (const base of BUILDS){
     try{
-      avisar("estado", { texto: "Baixando o Python…" });
+      avisar("estado", { texto: "baixando o Python…" });
       const mod = await import(base + "pyodide.mjs");
       py = await mod.loadPyodide({ indexURL: base });
-
       py.setStdout({ batched: (t) => avisar("linha", { texto: t, fluxo: "out" }) });
       py.setStderr({ batched: (t) => avisar("linha", { texto: t, fluxo: "err" }) });
-
       py.runPython(PREPARO);
-
-      const versao = py.runPython("import sys; sys.version.split()[0]");
-      avisar("pronto", { versao: versao, base: base });
+      avisar("pronto", { versao: py.runPython("import sys; sys.version.split()[0]") });
       return;
-    }catch(e){
-      ultimoErro = e;
-      py = null;
-    }
+    }catch(e){ ultimo = e; py = null; }
   }
-
-  avisar("falha", { texto: String((ultimoErro && ultimoErro.message) || ultimoErro || "desconhecido") });
+  avisar("falha", { texto: String((ultimo && ultimo.message) || ultimo || "motivo desconhecido") });
 }
 
-self.onmessage = async (evento) => {
-  const msg = evento.data;
+self.onmessage = async (ev) => {
+  const msg = ev.data;
 
-  if (msg.tipo === "ligar"){
-    prontoPromise = ligar();
-    await prontoPromise;
-    return;
-  }
+  if (msg.tipo === "ligar"){ prontoPromise = ligar(); await prontoPromise; return; }
+
+  if (prontoPromise) { await prontoPromise; }
+  if (!py){ avisar("fim", { id: msg.id, erro: "O motor Python nao esta disponivel." }); return; }
 
   if (msg.tipo === "rodar"){
-    if (prontoPromise) { await prontoPromise; }
-    if (!py){
-      avisar("fim", { id: msg.id, erro: "O motor Python não está disponível." });
-      return;
-    }
-
     try{
-      try{
-        await py.loadPackagesFromImports(msg.codigo);
-      }catch(e){ /* biblioteca indisponível: o próprio Python vai relatar */ }
-
+      try{ await py.loadPackagesFromImports(msg.codigo); }catch(e){}
       const fn = py.globals.get("_executar");
       const erro = fn(msg.codigo);
       fn.destroy();
       avisar("fim", { id: msg.id, erro: erro || null });
-    }catch(e){
-      avisar("fim", { id: msg.id, erro: String((e && e.message) || e) });
-    }
+    }catch(e){ avisar("fim", { id: msg.id, erro: String((e && e.message) || e) }); }
+    return;
+  }
+
+  if (msg.tipo === "corrigir"){
+    try{
+      try{ await py.loadPackagesFromImports(msg.codigo); }catch(e){}
+      const fn = py.globals.get("_corrigir");
+      const bruto = fn(msg.codigo, msg.testes);
+      fn.destroy();
+      avisar("resultado", { id: msg.id, dados: bruto });
+    }catch(e){ avisar("resultado", { id: msg.id, dados: JSON.stringify({ erro: String((e && e.message) || e), impresso: "", testes: [] }) }); }
   }
 };
 </script>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
@@ -486,427 +420,924 @@ self.onmessage = async (evento) => {
 
 <script>
 (function(){
-  "use strict";
+"use strict";
 
-  var LIMITE_MS = 6000;
+/* =======================================================================
+   CONFIGURAÇÃO — o que você pode precisar mudar está tudo aqui
+   ======================================================================= */
+var CONFIG = {
+  supabaseUrl : "https://ghjbljypxksubmcsvaig.supabase.co",
+  supabaseKey : "sb_publishable_qXCYqg1WdmelY9D1mptZXg_U8NdoKby",
+  perfil      : "bispo",
+  modulos     : ["curso/m01.json"],
+  limiteMs    : 6000
+};
 
-  var $ = function(id){ return document.getElementById(id); };
+/* =======================================================================
+   Utilidades
+   ======================================================================= */
+var $ = function(id){ return document.getElementById(id); };
+var app = $("app");
 
-  var elEstado    = $("estado");
-  var elSaida     = $("saida");
-  var elCron      = $("cronometro");
-  var btnRodar    = $("btnRodar");
-  var btnParar    = $("btnParar");
-  var btnLimpar   = $("btnLimpar");
-  var diagVersao  = $("diag-versao");
-  var diagTempo   = $("diag-tempo");
-  var diagEditor  = $("diag-editor");
+function esc(t){
+  return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
 
-  /* ---------------- Editor ---------------- */
+function el(html){
+  var d = document.createElement("div");
+  d.innerHTML = html;
+  return d.firstElementChild;
+}
 
-  var editor = null;
-  var usandoCM = false;
+async function sha256(txt){
+  var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(txt));
+  return Array.from(new Uint8Array(buf)).map(function(b){
+    return b.toString(16).padStart(2,"0");
+  }).join("");
+}
 
-  var CODIGO_INICIAL = [
-    "# Bem-vindo ao laboratório. Edite à vontade e clique em Executar.",
-    "",
-    "livros = [\"Gênesis\", \"Êxodo\", \"Levítico\", \"Números\", \"Deuteronômio\"]",
-    "",
-    "for numero, livro in enumerate(livros, start=1):",
-    "    print(f\"{numero}. {livro} tem {len(livro)} letras\")",
-    "",
-    "print(f\"São {len(livros)} livros no Pentateuco.\")"
-  ].join("\n");
+/* Destaque de sintaxe estático, para os blocos de leitura */
+function pintar(codigo){
+  var PALAVRAS = ["and","as","assert","break","class","continue","def","del","elif","else",
+    "except","False","finally","for","from","global","if","import","in","is","lambda","None",
+    "not","or","pass","raise","return","True","try","while","with","yield"];
+  var EMBUTIDAS = ["print","len","type","int","str","float","list","dict","range","sum","sorted",
+    "enumerate","input","abs","round","min","max","bool","set","tuple","open","zip"];
 
-  function montarEditor(){
-    var ta = $("codigo");
-    var simples = $("codigo-simples");
+  var partes = [];
+  var resto = String(codigo);
+  var padrao = /(#[^\n]*)|(f?"(?:[^"\\]|\\.)*")|(f?'(?:[^'\\]|\\.)*')|(\b\d+\.?\d*\b)|([A-Za-z_][A-Za-z0-9_]*)/g;
+  var pos = 0, m;
 
-    if (window.CodeMirror){
-      editor = CodeMirror.fromTextArea(ta, {
-        mode: "python",
-        theme: "vidas",
-        lineNumbers: true,
-        indentUnit: 4,
-        tabSize: 4,
-        indentWithTabs: false,
-        styleActiveLine: true,
-        lineWrapping: true,
-        smartIndent: true,
-        extraKeys: {
-          Tab: function(cm){ cm.replaceSelection("    "); },
-          "Ctrl-Enter": executar,
-          "Cmd-Enter": executar
-        }
-      });
-      editor.setValue(CODIGO_INICIAL);
-      usandoCM = true;
-      diagEditor.textContent = "editor: CodeMirror 5.65";
-    } else {
-      ta.style.display = "none";
-      simples.style.display = "block";
-      simples.value = CODIGO_INICIAL;
-      simples.addEventListener("keydown", function(e){
-        if (e.key === "Tab"){
-          e.preventDefault();
-          inserir("    ");
-        }
-        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)){
-          e.preventDefault();
-          executar();
-        }
-      });
-      diagEditor.textContent = "editor: texto simples";
-    }
+  while ((m = padrao.exec(resto)) !== null){
+    partes.push(esc(resto.slice(pos, m.index)));
+    var t = m[0];
+    if (m[1]) partes.push('<span class="tk-com">' + esc(t) + "</span>");
+    else if (m[2] || m[3]) partes.push('<span class="tk-str">' + esc(t) + "</span>");
+    else if (m[4]) partes.push('<span class="tk-num">' + esc(t) + "</span>");
+    else if (PALAVRAS.indexOf(t) >= 0) partes.push('<span class="tk-key">' + esc(t) + "</span>");
+    else if (EMBUTIDAS.indexOf(t) >= 0) partes.push('<span class="tk-fun">' + esc(t) + "</span>");
+    else partes.push(esc(t));
+    pos = m.index + t.length;
+  }
+  partes.push(esc(resto.slice(pos)));
+  return partes.join("");
+}
+
+/* =======================================================================
+   Banco (Supabase via REST, sem SDK)
+   ======================================================================= */
+var banco = { ativo:false, motivo:"" };
+
+async function sb(caminho, op){
+  op = op || {};
+  var cab = {
+    "apikey": CONFIG.supabaseKey,
+    "Authorization": "Bearer " + CONFIG.supabaseKey,
+    "Content-Type": "application/json"
+  };
+  if (op.prefer) cab["Prefer"] = op.prefer;
+
+  var r = await fetch(CONFIG.supabaseUrl + "/rest/v1/" + caminho, {
+    method: op.metodo || "GET",
+    headers: cab,
+    body: op.corpo ? JSON.stringify(op.corpo) : undefined
+  });
+  if (!r.ok) throw new Error("Supabase " + r.status + " — " + (await r.text()));
+  var t = await r.text();
+  return t ? JSON.parse(t) : null;
+}
+
+async function lerPerfil(){
+  var r = await sb("py_perfil?id=eq." + CONFIG.perfil + "&select=*");
+  return (r && r[0]) || null;
+}
+
+async function gravarPin(hash){
+  await sb("py_perfil", {
+    metodo:"POST",
+    prefer:"resolution=merge-duplicates",
+    corpo:[{ id: CONFIG.perfil, pin_hash: hash }]
+  });
+}
+
+async function lerProgresso(){
+  var r = await sb("py_progresso?perfil=eq." + CONFIG.perfil + "&select=licao,exercicio,acertou");
+  var mapa = {};
+  (r || []).forEach(function(p){
+    if (p.acertou) mapa[p.licao + "/" + p.exercicio] = true;
+  });
+  return mapa;
+}
+
+function gravarAcerto(licao, exercicio, tentativas){
+  if (!banco.ativo) return;
+  sb("py_progresso", {
+    metodo:"POST",
+    prefer:"resolution=merge-duplicates",
+    corpo:[{ perfil:CONFIG.perfil, licao:licao, exercicio:exercicio, acertou:true, tentativas:tentativas }]
+  }).catch(function(e){ console.warn("progresso:", e); });
+}
+
+function gravarTentativa(licao, exercicio, codigo, acertou, erro){
+  if (!banco.ativo) return;
+  sb("py_submissoes", {
+    metodo:"POST",
+    corpo:[{ perfil:CONFIG.perfil, licao:licao, exercicio:exercicio,
+             codigo:codigo, acertou:acertou, erro:erro || null }]
+  }).catch(function(e){ console.warn("submissao:", e); });
+}
+
+/* =======================================================================
+   Motor Python
+   ======================================================================= */
+var motor = {
+  worker:null, pronto:false, ocupado:false,
+  id:0, pendente:null, tempo:null, versao:"—"
+};
+
+function estadoMotor(chave, texto){
+  document.body.dataset.motor = chave;
+  $("notaTopo").textContent = texto;
+}
+
+function ligarMotor(){
+  var fonte = $("fonteWorker").textContent;
+  var url = URL.createObjectURL(new Blob([fonte], { type:"text/javascript" }));
+
+  try{
+    motor.worker = new Worker(url, { type:"module" });
+  }catch(e){
+    estadoMotor("falha", "navegador sem suporte");
+    return;
   }
 
-  function lerCodigo(){
-    return usandoCM ? editor.getValue() : $("codigo-simples").value;
-  }
+  motor.worker.onmessage = function(ev){
+    var m = ev.data;
 
-  function escreverCodigo(txt){
-    if (usandoCM){ editor.setValue(txt); editor.focus(); }
-    else { $("codigo-simples").value = txt; $("codigo-simples").focus(); }
-  }
+    if (m.tipo === "estado"){ estadoMotor("carregando", m.texto); return; }
 
-  function inserir(txt){
-    if (usandoCM){
-      editor.replaceSelection(txt);
-      editor.focus();
+    if (m.tipo === "pronto"){
+      motor.pronto = true; motor.versao = m.versao;
+      estadoMotor("pronto", "pronto");
+      $("diagMotor").textContent = "motor: Python " + m.versao;
+      document.dispatchEvent(new Event("motor-pronto"));
       return;
     }
-    var el = $("codigo-simples");
-    var i = el.selectionStart, f = el.selectionEnd;
-    el.value = el.value.slice(0, i) + txt + el.value.slice(f);
-    el.selectionStart = el.selectionEnd = i + txt.length;
-    el.focus();
-  }
 
-  /* ---------------- Barra de símbolos ---------------- */
+    if (m.tipo === "falha"){
+      estadoMotor("falha", "motor indisponível");
+      $("diagMotor").textContent = "motor: falhou";
+      return;
+    }
 
-  var SIMBOLOS = [
-    { rot: "⇥", ins: "    " },
-    { rot: ":", ins: ":" },
-    { rot: "_", ins: "_" },
-    { rot: "( )", ins: "()", volta: 1 },
-    { rot: "[ ]", ins: "[]", volta: 1 },
-    { rot: "{ }", ins: "{}", volta: 1 },
-    { rot: "\" \"", ins: "\"\"", volta: 1 },
-    { rot: "=", ins: " = " },
-    { rot: "==", ins: " == " },
-    { rot: "!=", ins: " != " },
-    { rot: "<", ins: " < " },
-    { rot: ">", ins: " > " },
-    { rot: "+", ins: " + " },
-    { rot: "-", ins: " - " },
-    { rot: "*", ins: " * " },
-    { rot: "/", ins: " / " },
-    { rot: "%", ins: " % " },
-    { rot: ",", ins: ", " },
-    { rot: ".", ins: "." },
-    { rot: "#", ins: "# " }
-  ];
+    if (m.tipo === "linha"){
+      if (motor.pendente && motor.pendente.imprimir) motor.pendente.imprimir(m.texto, m.fluxo);
+      return;
+    }
 
-  function montarSimbolos(){
-    var barra = $("simbolos");
-    SIMBOLOS.forEach(function(s){
-      var b = document.createElement("button");
-      b.type = "button";
-      b.textContent = s.rot;
-      b.setAttribute("aria-label", "Inserir " + s.rot);
-      b.addEventListener("mousedown", function(e){ e.preventDefault(); });
-      b.addEventListener("click", function(){
-        inserir(s.ins);
-        if (s.volta && usandoCM){
-          var pos = editor.getCursor();
-          editor.setCursor({ line: pos.line, ch: pos.ch - s.volta });
-          editor.focus();
-        } else if (s.volta){
-          var el = $("codigo-simples");
-          el.selectionStart = el.selectionEnd = el.selectionStart - s.volta;
-        }
-      });
-      barra.appendChild(b);
-    });
-  }
-
-  /* ---------------- Exemplos ---------------- */
-
-  var EXEMPLOS = [
-    { nome: "Primeiro passo", codigo: [
-      "nome = \"Bispo Enéas\"",
-      "igreja = \"Igreja Vidas\"",
-      "",
-      "print(f\"{nome} serve na {igreja}.\")",
-      "print(\"Paz do Senhor!\")"
-    ].join("\n") },
-
-    { nome: "Decisão", codigo: [
-      "presentes = 143",
-      "capacidade = 120",
-      "",
-      "if presentes > capacidade:",
-      "    print(\"Precisamos abrir o salão anexo.\")",
-      "elif presentes == capacidade:",
-      "    print(\"Casa cheia, exatamente no limite.\")",
-      "else:",
-      "    print(f\"Ainda cabem {capacidade - presentes} pessoas.\")"
-    ].join("\n") },
-
-    { nome: "Função", codigo: [
-      "def contar_palavras(texto):",
-      "    \"\"\"Devolve quantas palavras há no texto.\"\"\"",
-      "    return len(texto.split())",
-      "",
-      "",
-      "esboco = \"A graça é maior que a nossa maior necessidade\"",
-      "",
-      "print(contar_palavras(esboco))",
-      "print(contar_palavras(\"Amém\"))"
-    ].join("\n") },
-
-    { nome: "Dicionário", codigo: [
-      "escala = {",
-      "    \"domingo manhã\": \"Enéas\",",
-      "    \"domingo tarde\": \"Paulo\",",
-      "    \"domingo noite\": \"Enéas\",",
-      "}",
-      "",
-      "for culto, pregador in escala.items():",
-      "    print(f\"{culto:<16} -> {pregador}\")",
-      "",
-      "print()",
-      "print(\"Total de cultos:\", len(escala))"
-    ].join("\n") },
-
-    { nome: "Erro proposital", codigo: [
-      "# Repare como o erro é explicado abaixo.",
-      "",
-      "versiculos = [\"Jo 3.16\", \"Rm 8.28\", \"Sl 23.1\"]",
-      "",
-      "print(versiculos[7])"
-    ].join("\n") },
-
-    { nome: "Laço infinito", codigo: [
-      "# Este código NUNCA termina sozinho.",
-      "# Serve para você ver o laboratório se defender.",
-      "",
-      "contador = 0",
-      "while True:",
-      "    contador = contador + 1"
-    ].join("\n") }
-  ];
-
-  function montarExemplos(){
-    var nav = $("exemplos");
-    EXEMPLOS.forEach(function(ex){
-      var b = document.createElement("button");
-      b.type = "button";
-      b.textContent = ex.nome;
-      b.addEventListener("click", function(){ escreverCodigo(ex.codigo); });
-      nav.appendChild(b);
-    });
-  }
-
-  /* ---------------- Saída ---------------- */
-
-  function limparSaida(){ elSaida.innerHTML = ""; }
-
-  function escrever(texto, classe){
-    var span = document.createElement("span");
-    span.className = classe || "l-out";
-    span.textContent = texto.replace(/\n$/, "") + "\n";
-    elSaida.appendChild(span);
-    elSaida.scrollTop = elSaida.scrollHeight;
-  }
-
-  function glosar(texto){
-    var span = document.createElement("span");
-    span.className = "glosa";
-    span.textContent = texto;
-    elSaida.appendChild(span);
-    elSaida.scrollTop = elSaida.scrollHeight;
-  }
-
-  /* Dicas de primeiro socorro — um ensaio do tutor de IA da Fase 3 */
-  var DICAS = {
-    "SyntaxError":      "Python não conseguiu nem ler o código. Procure dois-pontos faltando no fim de um if, for ou def, ou um parêntese/aspas que você abriu e não fechou.",
-    "IndentationError": "O recuo está errado. Tudo que pertence a um if, for ou def precisa estar deslocado quatro espaços à direita — e sempre a mesma quantidade.",
-    "TabError":         "Você misturou tabulação e espaços no recuo. Use apenas espaços: o botão ⇥ da barra insere quatro.",
-    "NameError":        "Você usou um nome que Python nunca viu. Ou ele foi escrito com grafia diferente de onde foi criado, ou está sendo usado antes de existir.",
-    "TypeError":        "Você pediu uma operação entre tipos incompatíveis — somar texto com número, por exemplo. Converta antes com int(), float() ou str().",
-    "ValueError":       "O tipo estava certo, mas o valor não serve. É o caso de int(\"paz\"): é texto, mas não é um número.",
-    "IndexError":       "Você pediu uma posição que não existe na lista. Lembre-se: a primeira posição é 0, e numa lista de 3 itens a última é 2.",
-    "KeyError":         "Essa chave não existe no dicionário. Confira a grafia, ou use .get(chave) para receber None em vez de um erro.",
-    "ZeroDivisionError":"Divisão por zero. Teste se o divisor é diferente de zero antes de dividir.",
-    "AttributeError":   "Você chamou um método que esse tipo de objeto não possui. Confira se a variável é mesmo o que você imagina que ela seja.",
-    "RecursionError":   "Uma função ficou chamando a si mesma sem parar. Toda recursão precisa de uma condição de parada.",
-    "ModuleNotFoundError":"Essa biblioteca não está disponível aqui. Só existem as do Python padrão e algumas científicas."
+    if (m.tipo === "fim" || m.tipo === "resultado"){
+      if (!motor.pendente || m.id !== motor.pendente.id) return;
+      var p = motor.pendente;
+      encerrarChamada();
+      if (m.tipo === "fim") p.resolver({ erro: m.erro || null });
+      else p.resolver(JSON.parse(m.dados));
+    }
   };
 
-  function relatarErro(bruto){
-    var texto = bruto.replace("Traceback (most recent call last):", "Rastreamento (a última chamada é a de baixo):");
-    escrever(texto, "l-err");
+  motor.worker.onerror = function(){ estadoMotor("falha", "erro no motor"); };
+  motor.worker.postMessage({ tipo:"ligar" });
+}
 
-    var linhas = bruto.trim().split("\n");
-    var ultima = linhas[linhas.length - 1] || "";
-    var tipo = (ultima.match(/^([A-Za-z_]+Error)\b/) || [])[1];
+function encerrarChamada(){
+  clearTimeout(motor.tempo);
+  motor.pendente = null;
+  motor.ocupado = false;
+  if (motor.pronto) estadoMotor("pronto", "pronto");
+}
 
-    if (tipo && DICAS[tipo]) { glosar(DICAS[tipo]); }
+function chamarMotor(msg, aoImprimir){
+  return new Promise(function(resolver, rejeitar){
+    if (!motor.pronto){ rejeitar(new Error("O motor Python ainda não está pronto.")); return; }
+    if (motor.ocupado){ rejeitar(new Error("Há algo sendo executado agora.")); return; }
+
+    motor.ocupado = true;
+    motor.id += 1;
+    motor.pendente = { id: motor.id, resolver: resolver, rejeitar: rejeitar, imprimir: aoImprimir };
+    estadoMotor("rodando", "executando…");
+
+    motor.tempo = setTimeout(function(){ derrubarMotor(); }, CONFIG.limiteMs);
+    motor.worker.postMessage(Object.assign({ id: motor.id }, msg));
+  });
+}
+
+function derrubarMotor(){
+  var p = motor.pendente;
+  motor.worker.terminate();
+  motor.pronto = false;
+  motor.pendente = null;
+  motor.ocupado = false;
+  clearTimeout(motor.tempo);
+  estadoMotor("carregando", "religando…");
+  ligarMotor();
+  if (p) p.rejeitar(new Error("TEMPO"));
+}
+
+/* =======================================================================
+   Editor
+   ======================================================================= */
+var editor = null;
+
+function criarEditor(alvo, valor){
+  if (window.CodeMirror){
+    var ta = document.createElement("textarea");
+    alvo.appendChild(ta);
+    var cm = CodeMirror.fromTextArea(ta, {
+      mode:"python", theme:"vidas", lineNumbers:true,
+      indentUnit:4, tabSize:4, indentWithTabs:false,
+      styleActiveLine:true, lineWrapping:true, smartIndent:true,
+      viewportMargin: Infinity,
+      extraKeys:{ Tab: function(c){ c.replaceSelection("    "); } }
+    });
+    cm.setValue(valor || "");
+    editor = {
+      cm: cm,
+      ler: function(){ return cm.getValue(); },
+      escrever: function(v){ cm.setValue(v); },
+      inserir: function(t, volta){
+        cm.replaceSelection(t);
+        if (volta){
+          var p = cm.getCursor();
+          cm.setCursor({ line:p.line, ch:p.ch - volta });
+        }
+        cm.focus();
+      },
+      mover: function(dx, dy){
+        var p = cm.getCursor();
+        if (dy) cm.setCursor({ line: Math.max(0, p.line + dy), ch: p.ch });
+        else cm.setCursor({ line: p.line, ch: Math.max(0, p.ch + dx) });
+        cm.focus();
+      },
+      focar: function(){ cm.focus(); }
+    };
+  } else {
+    var t2 = document.createElement("textarea");
+    t2.className = "simples";
+    t2.spellcheck = false;
+    t2.setAttribute("autocapitalize","off");
+    t2.setAttribute("autocorrect","off");
+    t2.value = valor || "";
+    alvo.appendChild(t2);
+    t2.addEventListener("keydown", function(e){
+      if (e.key === "Tab"){ e.preventDefault(); editor.inserir("    "); }
+    });
+    editor = {
+      ler: function(){ return t2.value; },
+      escrever: function(v){ t2.value = v; },
+      inserir: function(txt, volta){
+        var i = t2.selectionStart, f = t2.selectionEnd;
+        t2.value = t2.value.slice(0,i) + txt + t2.value.slice(f);
+        var novo = i + txt.length - (volta || 0);
+        t2.selectionStart = t2.selectionEnd = novo;
+        t2.focus();
+      },
+      mover: function(dx){
+        var p = t2.selectionStart + dx;
+        t2.selectionStart = t2.selectionEnd = Math.max(0, p);
+        t2.focus();
+      },
+      focar: function(){ t2.focus(); }
+    };
+  }
+  return editor;
+}
+
+var SIMBOLOS = [
+  { r:"←", seta:[-1,0] }, { r:"→", seta:[1,0] }, { r:"↑", seta:[0,-1] }, { r:"↓", seta:[0,1] },
+  { r:"⇥", i:"    " }, { r:":", i:":" }, { r:"_", i:"_" },
+  { r:"( )", i:"()", v:1 }, { r:"[ ]", i:"[]", v:1 }, { r:"{ }", i:"{}", v:1 },
+  { r:"\" \"", i:"\"\"", v:1 }, { r:"f\"\"", i:"f\"\"", v:1 },
+  { r:"=", i:" = " }, { r:"==", i:" == " }, { r:"+", i:" + " }, { r:"-", i:" - " },
+  { r:"*", i:" * " }, { r:"/", i:" / " }, { r:",", i:", " }, { r:".", i:"." }, { r:"#", i:"# " }
+];
+
+function montarSimbolos(alvo){
+  var barra = document.createElement("div");
+  barra.className = "simbolos";
+  SIMBOLOS.forEach(function(s){
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = s.r;
+    if (s.seta) b.className = "setas";
+    b.addEventListener("mousedown", function(e){ e.preventDefault(); });
+    b.addEventListener("click", function(){
+      if (s.seta) editor.mover(s.seta[0], s.seta[1]);
+      else editor.inserir(s.i, s.v);
+    });
+    barra.appendChild(b);
+  });
+  alvo.appendChild(barra);
+}
+
+/* =======================================================================
+   Dicas de erro
+   ======================================================================= */
+var DICAS = {
+  "SyntaxError":"Python não conseguiu nem ler o código. Procure dois-pontos faltando, ou um parêntese ou aspas que você abriu e não fechou.",
+  "IndentationError":"O recuo está errado. Tudo que pertence a um if, for ou def precisa estar deslocado quatro espaços à direita — e sempre a mesma quantidade.",
+  "TabError":"Você misturou tabulação e espaços. Use só espaços: o botão ⇥ da barra insere quatro de uma vez.",
+  "NameError":"Você usou um nome que Python nunca viu. Ou a grafia difere de onde ele foi criado, ou está sendo usado antes de existir. Lembre-se: maiúscula e minúscula fazem diferença.",
+  "TypeError":"Operação entre tipos incompatíveis — somar texto com número, por exemplo. Converta antes com int(), float() ou str().",
+  "ValueError":"O tipo estava certo, mas o valor não serve. É o caso de int(\"paz\").",
+  "IndexError":"Você pediu uma posição que não existe. A primeira é 0, e numa lista de 3 itens a última é 2.",
+  "KeyError":"Essa chave não existe no dicionário. Confira a grafia.",
+  "ZeroDivisionError":"Divisão por zero. Teste se o divisor é diferente de zero antes de dividir.",
+  "AttributeError":"Você chamou um método que esse tipo de objeto não possui.",
+  "ModuleNotFoundError":"Essa biblioteca não está disponível aqui."
+};
+
+function tipoDoErro(bruto){
+  var linhas = String(bruto).trim().split("\n");
+  var ultima = linhas[linhas.length - 1] || "";
+  var m = ultima.match(/^([A-Za-z_]+Error)\b/);
+  return m ? m[1] : null;
+}
+
+function traduzirErro(bruto){
+  return String(bruto).replace("Traceback (most recent call last):", "Rastreamento (a última chamada é a de baixo):");
+}
+
+/* =======================================================================
+   Estado
+   ======================================================================= */
+var estado = { curso:null, progresso:{}, licao:null, indice:0, tentativas:0, respondido:false };
+
+function exerciciosFeitos(licao){
+  var n = 0;
+  licao.exercicios.forEach(function(ex){
+    if (estado.progresso[licao.id + "/" + ex.id]) n++;
+  });
+  return n;
+}
+function licaoCompleta(licao){
+  return exerciciosFeitos(licao) === licao.exercicios.length;
+}
+
+/* =======================================================================
+   Tela: PIN
+   ======================================================================= */
+function telaPin(perfil){
+  var novo = !perfil || !perfil.pin_hash;
+  $("btnVoltar").style.display = "none";
+  $("tituloTopo").textContent = "CODEX";
+
+  app.innerHTML =
+    '<div class="pin-caixa">' +
+      '<h2>' + (novo ? "CRIE SEU PIN" : "SEU PIN") + '</h2>' +
+      '<p>' + (novo
+        ? "Quatro dígitos, só para guardar o seu progresso nesta trilha."
+        : "Quatro dígitos para retomar de onde você parou.") + '</p>' +
+      '<input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off">' +
+      '<div class="pin-erro" id="pinErro"></div>' +
+    '</div>';
+
+  var campo = $("pin");
+  var erro = $("pinErro");
+  setTimeout(function(){ campo.focus(); }, 120);
+
+  campo.addEventListener("input", async function(){
+    var v = campo.value.replace(/\D/g,"");
+    campo.value = v;
+    if (v.length < 4) { erro.textContent = ""; return; }
+
+    var hash = await sha256(v);
+    if (novo){
+      try{
+        await gravarPin(hash);
+        entrar();
+      }catch(e){
+        erro.textContent = "Não consegui gravar o PIN.";
+        console.error(e);
+      }
+    } else if (hash === perfil.pin_hash){
+      entrar();
+    } else {
+      erro.textContent = "PIN incorreto.";
+      campo.value = "";
+    }
+  });
+}
+
+/* =======================================================================
+   Tela: trilha
+   ======================================================================= */
+function telaTrilha(){
+  estado.licao = null;
+  $("btnVoltar").style.display = "none";
+  $("tituloTopo").textContent = "CODEX";
+
+  var c = estado.curso;
+  var h = '<div class="folha">' +
+    '<h2 class="secao">Módulo ' + c.modulo + " — " + esc(c.titulo) + "</h2>" +
+    '<p class="legenda">' + esc(c.subtitulo) + "</p>";
+
+  c.licoes.forEach(function(licao, i){
+    var feitos = exerciciosFeitos(licao);
+    var total = licao.exercicios.length;
+    var anterior = i === 0 ? null : c.licoes[i-1];
+    var travada = anterior ? !licaoCompleta(anterior) : false;
+    var est = feitos === total ? "concluida" : (feitos > 0 ? "andamento" : "aberta");
+
+    h += '<button class="cartao" data-estado="' + est + '" data-licao="' + licao.id + '"' +
+         (travada ? " disabled" : "") + ">" +
+      '<span class="numero">Lição ' + licao.numero + "</span>" +
+      "<h3>" + esc(licao.titulo) + "</h3>" +
+      "<p>" + esc(licao.resumo) + "</p>" +
+      '<div class="barra"><i style="width:' + Math.round(feitos/total*100) + '%"></i></div>' +
+      '<div class="rodape"><span>' + feitos + " de " + total + " exercícios</span><span>" +
+        (travada ? "conclua a anterior" : (feitos === total ? "concluída" : (feitos > 0 ? "em andamento" : "começar"))) +
+      "</span></div></button>";
+  });
+
+  if (c.proximas && c.proximas.length){
+    h += '<div class="futuro"><span>ainda por escrever</span><ul>';
+    c.proximas.forEach(function(t){ h += "<li>" + esc(t) + "</li>"; });
+    h += "</ul></div>";
   }
 
-  /* ---------------- Worker ---------------- */
+  h += "</div>";
+  app.innerHTML = h;
+  app.scrollTop = 0;
 
-  var worker = null;
-  var pronto = false;
-  var rodando = false;
-  var relogio = null;
-  var tempoLimite = null;
-  var t0 = 0;
-  var tCarga = 0;
-  var idExec = 0;
+  Array.prototype.forEach.call(app.querySelectorAll(".cartao"), function(b){
+    b.addEventListener("click", function(){
+      var alvo = c.licoes.filter(function(l){ return l.id === b.dataset.licao; })[0];
+      abrirLicao(alvo);
+    });
+  });
+}
 
-  function definirEstado(chave, texto){
-    document.body.dataset.estado = chave;
-    elEstado.textContent = texto;
-  }
+/* =======================================================================
+   Tela: lição
+   ======================================================================= */
+function abrirLicao(licao){
+  estado.licao = licao;
+  $("btnVoltar").style.display = "block";
+  $("tituloTopo").textContent = licao.titulo;
+  telaConceito();
+}
 
-  function criarWorker(){
-    var fonte = $("fonte-worker").textContent;
-    var url = URL.createObjectURL(new Blob([fonte], { type: "text/javascript" }));
+function passos(ativo){
+  var nomes = [["conceito","Conceito"],["lab","Laboratório"],["exerc","Exercícios"]];
+  var h = '<div class="passos" role="tablist">';
+  nomes.forEach(function(n){
+    h += '<button role="tab" data-passo="' + n[0] + '" aria-selected="' + (n[0]===ativo) + '">' + n[1] + "</button>";
+  });
+  return h + "</div>";
+}
 
+function ligarPassos(){
+  Array.prototype.forEach.call(app.querySelectorAll(".passos button"), function(b){
+    b.addEventListener("click", function(){
+      var p = b.dataset.passo;
+      if (p === "conceito") telaConceito();
+      else if (p === "lab") telaLaboratorio();
+      else telaExercicio(0);
+    });
+  });
+}
+
+function telaConceito(){
+  var licao = estado.licao;
+  var h = '<div class="folha">' + passos("conceito") +
+    '<h2 class="secao">' + esc(licao.titulo) + "</h2>" +
+    '<p class="legenda">' + esc(licao.resumo) + "</p>";
+
+  licao.conceito.forEach(function(b, i){
+    if (b.tipo === "texto"){
+      h += '<p class="bloco-texto">' + esc(b.conteudo) + "</p>";
+    } else if (b.tipo === "aviso"){
+      h += '<div class="bloco-aviso">' + esc(b.conteudo) + "</div>";
+    } else if (b.tipo === "codigo"){
+      h += '<div class="exemplo" data-ex="' + i + '">' +
+             "<pre>" + pintar(b.conteudo) + "</pre>" +
+             (b.nota ? '<div class="nota">' + esc(b.nota) + "</div>" : "") +
+             '<div class="barra-exemplo"><button class="mini" data-rodar="' + i + '">executar</button></div>' +
+           "</div>";
+    }
+  });
+
+  h += '<div class="acoes" style="margin-top:26px">' +
+         '<button class="acao principal" id="irLab">Ir ao laboratório</button>' +
+       "</div></div>";
+
+  app.innerHTML = h;
+  app.scrollTop = 0;
+  ligarPassos();
+  $("irLab").addEventListener("click", telaLaboratorio);
+
+  Array.prototype.forEach.call(app.querySelectorAll("[data-rodar]"), function(b){
+    b.addEventListener("click", async function(){
+      var i = Number(b.dataset.rodar);
+      var caixa = app.querySelector('.exemplo[data-ex="' + i + '"]');
+      var pre = caixa.querySelector(".mini-saida") || el('<pre class="mini-saida"></pre>');
+      if (!pre.parentNode) caixa.appendChild(pre);
+      pre.className = "mini-saida";
+      pre.textContent = "…";
+
+      var linhas = [];
+      try{
+        var r = await chamarMotor({ tipo:"rodar", codigo: licao.conceito[i].conteudo },
+          function(t){ linhas.push(t); });
+        if (r.erro){ pre.className = "mini-saida ruim"; pre.textContent = traduzirErro(r.erro).trim(); }
+        else pre.textContent = linhas.join("").replace(/\n$/,"") || "(sem saída)";
+      }catch(e){
+        pre.className = "mini-saida ruim";
+        pre.textContent = e.message === "TEMPO" ? "Execução interrompida: passou de 6 segundos." : e.message;
+      }
+    });
+  });
+}
+
+function telaLaboratorio(){
+  var licao = estado.licao;
+  var lab = licao.laboratorio;
+
+  app.innerHTML = '<div class="folha">' + passos("lab") +
+    '<h2 class="secao">Laboratório</h2>' +
+    '<p class="legenda">' + esc(lab.instrucao) + "</p>" +
+    '<div class="moldura"><div class="cabeca"><span>codigo.py</span><span>livre</span></div>' +
+      '<div id="alvoEditor"></div></div>' +
+    '<div class="acoes">' +
+      '<button class="acao principal" id="btnRodar">Executar</button>' +
+      '<button class="acao discreta" id="btnRestaurar">Restaurar</button>' +
+      '<button class="acao espaco" id="irExerc">Ir aos exercícios</button>' +
+    "</div>" +
+    '<div class="saida-caixa"><span>saída</span><pre id="saida"><span class="vazio">Clique em Executar.</span></pre></div>' +
+    "</div>";
+
+  app.scrollTop = 0;
+  ligarPassos();
+
+  var alvo = $("alvoEditor");
+  criarEditor(alvo, lab.codigo);
+  montarSimbolos(alvo.parentNode);
+
+  $("btnRestaurar").addEventListener("click", function(){ editor.escrever(lab.codigo); });
+  $("irExerc").addEventListener("click", function(){ telaExercicio(0); });
+  $("btnRodar").addEventListener("click", async function(){
+    var saida = $("saida");
+    saida.textContent = "…";
+    var linhas = [];
     try{
-      worker = new Worker(url, { type: "module" });
+      var r = await chamarMotor({ tipo:"rodar", codigo: editor.ler() },
+        function(t, f){ linhas.push({ t:t, f:f }); });
+      saida.innerHTML = "";
+      linhas.forEach(function(l){
+        var s = document.createElement("span");
+        if (l.f === "err") s.className = "err";
+        s.textContent = l.t.replace(/\n$/,"") + "\n";
+        saida.appendChild(s);
+      });
+      if (r.erro){
+        var e = document.createElement("span");
+        e.className = "err";
+        e.textContent = traduzirErro(r.erro).trim();
+        saida.appendChild(e);
+        var tipo = tipoDoErro(r.erro);
+        if (tipo && DICAS[tipo]){
+          var g = document.createElement("div");
+          g.className = "glosa";
+          g.textContent = DICAS[tipo];
+          saida.appendChild(g);
+        }
+      } else if (!linhas.length){
+        saida.innerHTML = '<span class="vazio">Rodou sem erro, mas não imprimiu nada. Use print() para ver algum resultado.</span>';
+      }
     }catch(e){
-      definirEstado("falha", "Este navegador não suporta workers de módulo.");
+      saida.innerHTML = "";
+      var s2 = document.createElement("span");
+      s2.className = "err";
+      s2.textContent = e.message === "TEMPO"
+        ? "Execução interrompida após 6 segundos. Quase sempre é um laço que nunca chega à condição de parada."
+        : e.message;
+      saida.appendChild(s2);
+    }
+  });
+}
+
+/* =======================================================================
+   Tela: exercício
+   ======================================================================= */
+function telaExercicio(i){
+  var licao = estado.licao;
+  if (i >= licao.exercicios.length){ telaFim(); return; }
+
+  estado.indice = i;
+  estado.tentativas = 0;
+  estado.respondido = false;
+
+  var ex = licao.exercicios[i];
+  var jaFeito = !!estado.progresso[licao.id + "/" + ex.id];
+
+  var h = '<div class="folha">' + passos("exerc");
+
+  h += '<div class="pontos">';
+  licao.exercicios.forEach(function(o, k){
+    var cls = k === i ? "atual" : (estado.progresso[licao.id + "/" + o.id] ? "feito" : "");
+    h += '<i class="' + cls + '"></i>';
+  });
+  h += "<em>" + (i+1) + " de " + licao.exercicios.length + "</em></div>";
+
+  h += '<p class="enunciado">' + esc(ex.enunciado) + "</p>";
+
+  if (ex.codigo) h += '<div class="exemplo"><pre>' + pintar(ex.codigo) + "</pre></div>";
+
+  if (ex.tipo === "escolha"){
+    h += '<div id="opcoes">';
+    ex.opcoes.forEach(function(o, k){
+      h += '<button class="opcao" data-op="' + k + '" aria-pressed="false">' + esc(o) + "</button>";
+    });
+    h += "</div>";
+  } else {
+    if (ex.mostraEsperado && ex.esperado){
+      h += '<div class="esperado-caixa"><span>saída esperada</span><pre>' + esc(ex.esperado) + "</pre></div>";
+    }
+    h += '<div class="moldura"><div class="cabeca"><span>codigo.py</span><span>exercício ' + (i+1) + "</span></div>" +
+         '<div id="alvoEditor"></div></div>';
+  }
+
+  h += '<div class="acoes" id="acoes">' +
+       '<button class="acao principal" id="btnVerificar">Verificar</button>';
+  if (ex.tipo === "codigo") h += '<button class="acao discreta" id="btnTestar">Só executar</button>';
+  h += '<button class="acao discreta espaco" id="btnPular">Pular</button>' +
+       "</div>";
+
+  h += '<div id="retorno"></div></div>';
+
+  app.innerHTML = h;
+  app.scrollTop = 0;
+  ligarPassos();
+
+  var escolhida = -1;
+
+  if (ex.tipo === "escolha"){
+    Array.prototype.forEach.call(app.querySelectorAll(".opcao"), function(b){
+      b.addEventListener("click", function(){
+        if (estado.respondido) return;
+        escolhida = Number(b.dataset.op);
+        Array.prototype.forEach.call(app.querySelectorAll(".opcao"), function(o){
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+      });
+    });
+  } else {
+    var alvo = $("alvoEditor");
+    criarEditor(alvo, ex.inicial || "");
+    montarSimbolos(alvo.parentNode);
+    $("btnTestar").addEventListener("click", executarSolto);
+  }
+
+  $("btnPular").addEventListener("click", function(){ telaExercicio(i + 1); });
+  $("btnVerificar").addEventListener("click", function(){
+    if (ex.tipo === "escolha") verificarEscolha(escolhida);
+    else verificarCodigo();
+  });
+
+  if (jaFeito){
+    mostrarRetorno("bom", "Já concluído", "Você acertou este exercício antes. Pode refazer ou seguir adiante.", null, true);
+  }
+
+  /* ---- verificação: múltipla escolha ---- */
+  function verificarEscolha(k){
+    if (k < 0){
+      mostrarRetorno("mau", "Escolha uma opção", "Toque numa das alternativas antes de verificar.", null, false);
+      return;
+    }
+    estado.tentativas += 1;
+    var certo = k === ex.correta;
+    gravarTentativa(licao.id, ex.id, "opção " + (k+1), certo, null);
+
+    Array.prototype.forEach.call(app.querySelectorAll(".opcao"), function(o, idx){
+      o.disabled = certo;
+      if (idx === k) o.classList.add(certo ? "certa" : "errada");
+      if (certo && idx === ex.correta) o.classList.add("certa");
+    });
+
+    if (certo){
+      estado.respondido = true;
+      estado.progresso[licao.id + "/" + ex.id] = true;
+      gravarAcerto(licao.id, ex.id, estado.tentativas);
+      mostrarRetorno("bom", "Correto", ex.explicacao, null, true);
+    } else {
+      mostrarRetorno("mau", "Ainda não", "Essa não é a alternativa certa. Releia o código com calma e tente de novo.", null, false);
+    }
+  }
+
+  /* ---- executar sem corrigir ---- */
+  async function executarSolto(){
+    var linhas = [];
+    try{
+      var r = await chamarMotor({ tipo:"rodar", codigo: editor.ler() }, function(t){ linhas.push(t); });
+      var txt = linhas.join("").replace(/\n$/,"");
+      if (r.erro) mostrarRetorno("mau", "Erro ao executar", null, traduzirErro(r.erro).trim(), false, tipoDoErro(r.erro));
+      else mostrarRetorno("bom", "Executou", txt ? "Saída do seu código:" : "Rodou sem erro e sem imprimir nada.", txt, false);
+    }catch(e){
+      mostrarRetorno("mau", "Interrompido", e.message === "TEMPO"
+        ? "Passou de 6 segundos sem terminar. Verifique se há um laço sem condição de parada."
+        : e.message, null, false);
+    }
+  }
+
+  /* ---- verificação: código ---- */
+  async function verificarCodigo(){
+    var codigo = editor.ler();
+    if (!codigo.trim()){
+      mostrarRetorno("mau", "Editor vazio", "Escreva o código antes de verificar.", null, false);
+      return;
+    }
+    estado.tentativas += 1;
+
+    var testes = ex.verificacao === "saida"
+      ? [{ tipo:"saida", rotulo:"saída do programa", esperado: ex.esperado }]
+      : (ex.testes || []);
+
+    var r;
+    try{
+      r = await chamarMotor({ tipo:"corrigir", codigo: codigo, testes: JSON.stringify(testes) });
+    }catch(e){
+      mostrarRetorno("mau", "Interrompido", e.message === "TEMPO"
+        ? "Passou de 6 segundos sem terminar. Verifique se há um laço sem condição de parada."
+        : e.message, null, false);
       return;
     }
 
-    worker.onmessage = function(ev){
-      var m = ev.data;
+    if (r.erro){
+      gravarTentativa(licao.id, ex.id, codigo, false, r.erro);
+      mostrarRetorno("mau", "O código não chegou ao fim", null, traduzirErro(r.erro).trim(), false, tipoDoErro(r.erro));
+      return;
+    }
 
-      if (m.tipo === "estado"){
-        definirEstado("carregando", m.texto);
-      }
+    var todos = r.testes.length > 0 && r.testes.every(function(t){ return t.ok; });
+    gravarTentativa(licao.id, ex.id, codigo, todos, null);
 
-      else if (m.tipo === "pronto"){
-        pronto = true;
-        tCarga = Math.round(performance.now() - tInicio);
-        definirEstado("pronto", "Motor pronto");
-        btnRodar.disabled = false;
-        diagVersao.textContent = "motor: Python " + m.versao;
-        diagTempo.textContent  = "carga: " + (tCarga / 1000).toFixed(1) + "s";
-      }
-
-      else if (m.tipo === "falha"){
-        definirEstado("falha", "Não consegui carregar o Python");
-        limparSaida();
-        escrever("Falha ao iniciar o motor Python.", "l-err");
-        escrever(m.texto, "l-err");
-        glosar("Verifique a conexão com a internet. O laboratório precisa baixar o Python na primeira vez que roda em cada aparelho.");
-      }
-
-      else if (m.tipo === "linha"){
-        escrever(m.texto, m.fluxo === "err" ? "l-err" : "l-out");
-      }
-
-      else if (m.tipo === "fim"){
-        if (m.id !== idExec) { return; }
-        finalizar();
-        if (m.erro) { relatarErro(m.erro); }
-        else if (!elSaida.textContent.trim()){
-          glosar("O código rodou sem erros, mas não imprimiu nada. Use print() para ver algum resultado.");
-        }
-      }
-    };
-
-    worker.onerror = function(){
-      definirEstado("falha", "Erro no motor");
-    };
-
-    worker.postMessage({ tipo: "ligar" });
-  }
-
-  var tInicio = performance.now();
-
-  /* ---------------- Execução ---------------- */
-
-  function executar(){
-    if (!pronto || rodando) { return; }
-
-    rodando = true;
-    idExec = idExec + 1;
-    var meuId = idExec;
-
-    limparSaida();
-    definirEstado("rodando", "Executando…");
-    btnRodar.disabled = true;
-    btnParar.disabled = false;
-
-    t0 = performance.now();
-    elCron.textContent = "0,0 s";
-    relogio = setInterval(function(){
-      elCron.textContent = ((performance.now() - t0) / 1000).toFixed(1).replace(".", ",") + " s";
-    }, 100);
-
-    tempoLimite = setTimeout(function(){
-      if (rodando && idExec === meuId) { interromper(true); }
-    }, LIMITE_MS);
-
-    worker.postMessage({ tipo: "rodar", codigo: lerCodigo(), id: meuId });
-  }
-
-  function finalizar(){
-    rodando = false;
-    clearTimeout(tempoLimite);
-    clearInterval(relogio);
-    elCron.textContent = ((performance.now() - t0) / 1000).toFixed(1).replace(".", ",") + " s";
-    btnRodar.disabled = false;
-    btnParar.disabled = true;
-    if (pronto) { definirEstado("pronto", "Motor pronto"); }
-  }
-
-  function interromper(porTempo){
-    if (!rodando) { return; }
-
-    idExec = idExec + 1;
-    worker.terminate();
-    pronto = false;
-    finalizar();
-    btnRodar.disabled = true;
-
-    if (porTempo){
-      escrever("— execução interrompida após " + (LIMITE_MS / 1000) + " segundos —", "l-err");
-      glosar("Seu código não terminou sozinho. Quase sempre isso é um laço que nunca chega à condição de parada: verifique se algo dentro do while realmente muda o valor que ele está testando.");
+    if (todos){
+      estado.respondido = true;
+      estado.progresso[licao.id + "/" + ex.id] = true;
+      gravarAcerto(licao.id, ex.id, estado.tentativas);
+      mostrarRetorno("bom", "Correto", "Todas as verificações passaram.", null, true, null, r.testes);
     } else {
-      escrever("— execução interrompida por você —", "l-nota");
+      mostrarRetorno("mau", "Quase lá", "Compare com atenção o esperado e o obtido:", null, false, null, r.testes);
     }
-
-    definirEstado("carregando", "Religando o motor…");
-    tInicio = performance.now();
-    criarWorker();
   }
 
-  /* ---------------- Ligação dos controles ---------------- */
+  /* ---- painel de retorno ---- */
+  function mostrarRetorno(tom, titulo, texto, bruto, avancar, tipoErro, testes){
+    var alvo = $("retorno");
+    var h = '<div class="retorno ' + (tom === "bom" ? "bom" : "mau") + '">' +
+            "<h4>" + esc(titulo) + "</h4>";
+    if (texto) h += "<p>" + esc(texto) + "</p>";
+    if (bruto) h += "<pre>" + esc(bruto) + "</pre>";
+    if (tipoErro && DICAS[tipoErro]) h += '<div class="glosa">' + esc(DICAS[tipoErro]) + "</div>";
 
-  btnRodar.addEventListener("click", executar);
-  btnParar.addEventListener("click", function(){ interromper(false); });
-  btnLimpar.addEventListener("click", function(){
-    elSaida.innerHTML = "<span class=\"vazio\">A saída do seu código aparece aqui.</span>";
-    elCron.textContent = "";
-  });
+    if (testes && testes.length){
+      h += '<table class="testes"><tr><th></th><th>verificação</th><th>esperado</th><th>obtido</th></tr>';
+      testes.forEach(function(t){
+        h += '<tr class="' + (t.ok ? "ok" : "nao") + '">' +
+             '<td class="marca">' + (t.ok ? "✓" : "✗") + "</td>" +
+             "<td>" + esc(t.rotulo) + "</td>" +
+             "<td>" + esc(t.esperado) + "</td>" +
+             '<td class="obtido">' + esc(t.erro ? t.erro : t.obtido) + "</td></tr>";
+      });
+      h += "</table>";
+      testes.forEach(function(t){
+        if (!t.ok && t.detalhe) h += '<div class="glosa">' + esc(t.detalhe) + "</div>";
+      });
+    }
+    h += "</div>";
 
-  document.addEventListener("keydown", function(e){
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)){
-      e.preventDefault();
-      executar();
+    h += '<div class="acoes">';
+    if (avancar){
+      h += '<button class="acao principal" id="btnProximo">' +
+           (i + 1 >= licao.exercicios.length ? "Concluir lição" : "Próximo exercício") + "</button>";
+    } else {
+      if (estado.tentativas >= 2 && ex.dica) h += '<button class="acao" id="btnDica">Ver dica</button>';
+      if (estado.tentativas >= 3 && ex.solucao) h += '<button class="acao discreta" id="btnSolucao">Ver solução</button>';
+    }
+    h += "</div>";
+
+    alvo.innerHTML = h;
+
+    if ($("btnProximo")) $("btnProximo").addEventListener("click", function(){ telaExercicio(i + 1); });
+    if ($("btnDica")) $("btnDica").addEventListener("click", function(){
+      $("btnDica").outerHTML = '<div class="glosa" style="width:100%">' + esc(ex.dica) + "</div>";
+    });
+    if ($("btnSolucao")) $("btnSolucao").addEventListener("click", function(){
+      editor.escrever(ex.solucao);
+      $("btnSolucao").outerHTML = '<div class="glosa" style="width:100%">A solução foi escrita no editor. Leia com calma, execute, e depois apague e escreva do seu jeito.</div>';
+    });
+
+    alvo.scrollIntoView({ behavior:"smooth", block:"nearest" });
+  }
+}
+
+/* =======================================================================
+   Tela: conclusão
+   ======================================================================= */
+function telaFim(){
+  var licao = estado.licao;
+  var feitos = exerciciosFeitos(licao);
+  var total = licao.exercicios.length;
+  var completa = feitos === total;
+
+  app.innerHTML = '<div class="folha"><div class="fim">' +
+    '<div class="selo">' + (completa ? "✦" : "◈") + "</div>" +
+    "<h3>" + (completa ? "Lição concluída" : "Fim dos exercícios") + "</h3>" +
+    "<p>" + (completa
+      ? "Você acertou os " + total + " exercícios de " + esc(licao.titulo) + "."
+      : "Você acertou " + feitos + " de " + total + ". Os que ficaram para trás continuam abertos.") + "</p>" +
+    '<div class="acoes" style="justify-content:center">' +
+      (completa ? "" : '<button class="acao" id="btnRefazer">Refazer os que faltam</button>') +
+      '<button class="acao principal" id="btnTrilha">Voltar à trilha</button>' +
+    "</div></div></div>";
+
+  app.scrollTop = 0;
+  $("btnTrilha").addEventListener("click", telaTrilha);
+  if ($("btnRefazer")) $("btnRefazer").addEventListener("click", function(){
+    for (var k = 0; k < licao.exercicios.length; k++){
+      if (!estado.progresso[licao.id + "/" + licao.exercicios[k].id]){ telaExercicio(k); return; }
     }
   });
+}
 
-  montarEditor();
-  montarSimbolos();
-  montarExemplos();
-  criarWorker();
+/* =======================================================================
+   Arranque
+   ======================================================================= */
+function aviso(texto){
+  var f = el('<div class="faixa">' + esc(texto) + "</div>");
+  document.querySelector("header").insertAdjacentElement("afterend", f);
+}
+
+async function entrar(){
+  try{
+    estado.progresso = await lerProgresso();
+  }catch(e){
+    console.warn("progresso:", e);
+    estado.progresso = {};
+  }
+  telaTrilha();
+}
+
+async function iniciar(){
+  ligarMotor();
+
+  app.innerHTML = '<div class="folha"><p class="legenda">Carregando a trilha…</p></div>';
+
+  /* Conteúdo do curso */
+  try{
+    var r = await fetch(CONFIG.modulos[0], { cache:"no-cache" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    estado.curso = await r.json();
+  }catch(e){
+    app.innerHTML = '<div class="folha"><h2 class="secao">Não achei o conteúdo</h2>' +
+      '<p class="legenda">O arquivo <code>' + esc(CONFIG.modulos[0]) + '</code> não foi carregado. ' +
+      'Confirme que a pasta <code>curso</code> está no repositório e que você está abrindo pelo GitHub Pages, não pelo Finder.</p>' +
+      '<div class="exemplo"><pre>' + esc(e.message) + "</pre></div></div>";
+    return;
+  }
+
+  /* Banco */
+  var perfil = null;
+  try{
+    perfil = await lerPerfil();
+    banco.ativo = true;
+    $("diagBanco").textContent = "banco: conectado";
+  }catch(e){
+    banco.ativo = false;
+    banco.motivo = e.message;
+    $("diagBanco").textContent = "banco: offline";
+    console.warn("supabase:", e);
+    aviso("Sem conexão com o banco. Você pode estudar normalmente, mas o progresso não será guardado.");
+    estado.progresso = {};
+    telaTrilha();
+    return;
+  }
+
+  telaPin(perfil);
+}
+
+$("btnVoltar").addEventListener("click", function(){
+  if (estado.licao) telaTrilha();
+});
+
+document.addEventListener("keydown", function(e){
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)){
+    var b = $("btnVerificar") || $("btnRodar");
+    if (b) { e.preventDefault(); b.click(); }
+  }
+});
+
+iniciar();
 
 })();
 </script>

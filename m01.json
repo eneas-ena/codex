@@ -1,0 +1,253 @@
+{
+  "modulo": 1,
+  "titulo": "Fundamentos",
+  "subtitulo": "O que Python faz quando você manda, e como se dirigir a ele.",
+  "licoes": [
+    {
+      "id": "m01l01",
+      "numero": 1,
+      "titulo": "A primeira palavra",
+      "resumo": "Mostrar algo na tela, escrever texto e deixar recados para você mesmo.",
+      "conceito": [
+        {
+          "tipo": "texto",
+          "conteudo": "Python lê o seu código como você lê uma página: de cima para baixo, uma linha por vez. Ele executa a primeira linha até o fim, depois passa para a segunda, e assim por diante. Nada acontece fora dessa ordem enquanto você não mandar."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "O comando mais básico de todos é o print. Ele pega o que estiver dentro dos parênteses e mostra na tela."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(\"Paz do Senhor\")",
+          "nota": "Repare nas três partes: a palavra print, os parênteses, e o texto entre aspas."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Texto, em Python, precisa estar entre aspas. Elas não são enfeite: são o que avisa Python de que aquilo é conteúdo a ser exibido, e não um comando a ser obedecido. Serve tanto aspas duplas quanto simples, desde que você feche com a mesma que abriu."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(\"Igreja Vidas\")\nprint('João Pessoa')",
+          "nota": "As duas linhas funcionam igualmente bem."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Um print por linha, um resultado por linha. Se você quiser três linhas na tela, escreva três prints."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Há ainda o cerquilha, o símbolo #. Tudo que vem depois dele numa linha é ignorado por Python. Serve para você deixar recado para si mesmo — ou para quem for ler o código depois. É a nota de rodapé do programador."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "# Escala de domingo\nprint(\"Culto da manhã\")   # este comentário também é ignorado",
+          "nota": "A primeira linha inteira e o trecho final da segunda não fazem nada."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "O erro mais comum de quem começa: esquecer de fechar as aspas ou os parênteses. Python não adivinha onde o texto termina — ele simplesmente reclama. Você vai ver isso acontecer daqui a pouco, de propósito."
+        }
+      ],
+      "laboratorio": {
+        "instrucao": "Rode do jeito que está. Depois troque os textos, acrescente um quarto print, apague as aspas de uma linha para ver o que Python responde. Nada aqui é corrigido — é só para experimentar.",
+        "codigo": "# Experimente à vontade\n\nprint(\"Bom dia\")\nprint(\"Hoje pregarei sobre a graça\")\nprint(\"Amém\")"
+      },
+      "exercicios": [
+        {
+          "id": "e1",
+          "tipo": "escolha",
+          "enunciado": "O que aparece na tela quando este código é executado?",
+          "codigo": "print(\"Igreja Vidas\")",
+          "opcoes": [
+            "print(\"Igreja Vidas\")",
+            "Igreja Vidas",
+            "\"Igreja Vidas\"",
+            "Nada, porque falta alguma coisa"
+          ],
+          "correta": 1,
+          "explicacao": "As aspas delimitam o texto, mas não fazem parte dele. Python mostra o conteúdo, não a embalagem."
+        },
+        {
+          "id": "e2",
+          "tipo": "escolha",
+          "enunciado": "Uma destas linhas vai fazer Python reclamar. Qual?",
+          "codigo": "print(\"Efésios\")\nprint('Filipenses')\nprint(\"Colossenses)\nprint(\"Tessalonicenses\")",
+          "opcoes": [
+            "A primeira",
+            "A segunda, porque usa aspas simples",
+            "A terceira",
+            "A quarta"
+          ],
+          "correta": 2,
+          "explicacao": "Na terceira linha as aspas abrem mas nunca fecham. Python continua procurando o fim do texto e chega ao fim da linha sem encontrar. Aspas simples, na segunda linha, são perfeitamente válidas."
+        },
+        {
+          "id": "e3",
+          "tipo": "escolha",
+          "enunciado": "Quantas linhas este código mostra na tela?",
+          "codigo": "# print(\"Primeira\")\nprint(\"Segunda\")\nprint(\"Terceira\")   # print(\"Quarta\")",
+          "opcoes": ["Uma", "Duas", "Três", "Quatro"],
+          "correta": 1,
+          "explicacao": "A primeira linha inteira está comentada, e o print da última também — tudo que vem depois do # é ignorado. Sobram apenas Segunda e Terceira."
+        },
+        {
+          "id": "e4",
+          "tipo": "codigo",
+          "enunciado": "Faça o programa mostrar exatamente estas três linhas, nesta ordem:",
+          "mostraEsperado": true,
+          "inicial": "",
+          "verificacao": "saida",
+          "esperado": "Culto da manhã\nEscola Bíblica\nCulto da noite",
+          "dica": "São três prints, um em cada linha. Copie os acentos com cuidado: Python compara o texto letra por letra.",
+          "solucao": "print(\"Culto da manhã\")\nprint(\"Escola Bíblica\")\nprint(\"Culto da noite\")"
+        },
+        {
+          "id": "e5",
+          "tipo": "codigo",
+          "enunciado": "Este código está quebrado em dois lugares. Conserte-o para que mostre as duas linhas esperadas.",
+          "mostraEsperado": true,
+          "inicial": "print(\"Bispo Enéas)\nprint(\"Igreja Vidas\"",
+          "verificacao": "saida",
+          "esperado": "Bispo Enéas\nIgreja Vidas",
+          "dica": "Na primeira linha faltam aspas. Na segunda falta o parêntese que fecha. Leia cada linha perguntando: tudo que abri, eu fechei?",
+          "solucao": "print(\"Bispo Enéas\")\nprint(\"Igreja Vidas\")"
+        }
+      ]
+    },
+
+    {
+      "id": "m01l02",
+      "numero": 2,
+      "titulo": "Dar nome às coisas",
+      "resumo": "Guardar valores em variáveis, distinguir texto de número e montar frases com f-string.",
+      "conceito": [
+        {
+          "tipo": "texto",
+          "conteudo": "Até agora você mandou Python mostrar um texto e ele esqueceu tudo em seguida. Uma variável é o contrário disso: é um nome que você dá a um valor para poder usá-lo depois, quantas vezes quiser."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "igreja = \"Igreja Vidas\"\n\nprint(igreja)\nprint(igreja)",
+          "nota": "O nome vai à esquerda, o valor à direita, e o sinal de igual no meio. Repare que igreja, dentro do print, aparece sem aspas: você quer o conteúdo guardado, não a palavra."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "Aqui mora uma armadilha para quem vem da matemática. O sinal = em Python não afirma que dois lados são iguais. Ele manda guardar: pegue o valor da direita e chame-o pelo nome da esquerda. É uma ordem, não uma constatação."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Por isso uma variável pode mudar de valor. A última atribuição é a que vale, e as anteriores se perdem."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "presentes = 80\npresentes = 143\n\nprint(presentes)",
+          "nota": "Mostra 143. O valor 80 existiu por uma linha e foi substituído."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Os valores têm tipos diferentes, e a distinção importa mais do que parece. Texto entre aspas é str, uma cadeia de caracteres. Número inteiro sem aspas é int. Número com casas decimais é float — e em Python o separador decimal é o ponto, não a vírgula."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "nome = \"Enéas\"        # str  — texto\ncultos = 3            # int  — inteiro\noferta = 1250.75      # float — com decimais\ntelefone = \"83999\"    # str! está entre aspas\n\nprint(type(oferta))",
+          "nota": "A função type revela o tipo de um valor. Repare no telefone: mesmo sendo formado por algarismos, ele é texto, porque está entre aspas — e é assim que deve ser, já que ninguém soma telefones."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Para juntar variáveis dentro de uma frase, use a f-string: um f colado antes das aspas de abertura, e cada variável entre chaves no meio do texto."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "pregador = \"Enéas\"\ncultos = 3\n\nprint(f\"{pregador} pregará {cultos} vezes no domingo.\")",
+          "nota": "Sem o f, as chaves apareceriam literalmente na tela. Com ele, Python troca cada par de chaves pelo valor guardado."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "Nomes de variáveis não aceitam espaço nem acento, e Python diferencia maiúsculas de minúsculas: oferta e Oferta são duas variáveis distintas. Se você guardar num nome e chamar por outro, o erro será NameError."
+        }
+      ],
+      "laboratorio": {
+        "instrucao": "Rode como está. Depois mude os valores, acrescente uma variável sua, tente somar oferta com nome para ver o que Python responde, e troque uma letra na chamada de uma variável para conhecer o NameError de perto.",
+        "codigo": "pregador = \"Enéas\"\ntema = \"A graça que basta\"\nminutos = 42\noferta = 1250.75\n\nprint(f\"Pregador: {pregador}\")\nprint(f\"Tema: {tema}\")\nprint(f\"Duração: {minutos} minutos\")\nprint(f\"Oferta: R$ {oferta}\")"
+      },
+      "exercicios": [
+        {
+          "id": "e1",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra na tela?",
+          "codigo": "membros = 210\nmembros = 235\nmembros = 228\n\nprint(membros)",
+          "opcoes": ["210", "235", "228", "673"],
+          "correta": 2,
+          "explicacao": "Cada linha substitui o valor anterior. Quando o print acontece, o último valor guardado é 228."
+        },
+        {
+          "id": "e2",
+          "tipo": "escolha",
+          "enunciado": "Qual destas variáveis guarda um número, e não um texto?",
+          "codigo": "a = \"143\"\nb = 143\nc = \"cento e quarenta e três\"\nd = \"143.0\"",
+          "opcoes": ["a", "b", "c", "d"],
+          "correta": 1,
+          "explicacao": "Só b está sem aspas. As outras três são texto — inclusive a e d, que parecem números mas estão entre aspas e por isso não podem entrar numa conta."
+        },
+        {
+          "id": "e3",
+          "tipo": "escolha",
+          "enunciado": "Este código dá erro. Por quê?",
+          "codigo": "Oferta = 1250.75\n\nprint(oferta)",
+          "opcoes": [
+            "Porque falta o f antes das aspas",
+            "Porque números decimais não podem ser guardados",
+            "Porque a variável foi criada como Oferta e chamada como oferta",
+            "Porque falta aspas no valor"
+          ],
+          "correta": 2,
+          "explicacao": "Python diferencia maiúsculas de minúsculas. Oferta e oferta são nomes distintos, e o segundo nunca foi criado — daí o NameError."
+        },
+        {
+          "id": "e4",
+          "tipo": "codigo",
+          "enunciado": "Crie três variáveis: livro com o texto Apocalipse, capitulos com o número inteiro 22, e autor com o texto João. Não precisa imprimir nada.",
+          "inicial": "",
+          "verificacao": "expressao",
+          "testes": [
+            { "rotulo": "livro", "chamada": "livro", "esperado": "'Apocalipse'" },
+            { "rotulo": "capitulos", "chamada": "capitulos", "esperado": "22" },
+            { "rotulo": "autor", "chamada": "autor", "esperado": "'João'" }
+          ],
+          "dica": "Três linhas, cada uma no formato nome = valor. Texto vai entre aspas, número não.",
+          "solucao": "livro = \"Apocalipse\"\ncapitulos = 22\nautor = \"João\""
+        },
+        {
+          "id": "e5",
+          "tipo": "codigo",
+          "enunciado": "As ofertas dos três cultos de domingo estão guardadas abaixo. Crie a variável total com a soma das três, sem digitar o resultado à mão.",
+          "inicial": "manha = 840.50\ntarde = 312.00\nnoite = 1105.25\n\n# escreva a linha do total aqui",
+          "verificacao": "expressao",
+          "testes": [
+            { "rotulo": "total", "chamada": "total", "esperado": "2257.75" }
+          ],
+          "dica": "Você pode somar variáveis diretamente: total = manha + tarde + noite. É a máquina que faz a conta, não você.",
+          "solucao": "manha = 840.50\ntarde = 312.00\nnoite = 1105.25\n\ntotal = manha + tarde + noite"
+        },
+        {
+          "id": "e6",
+          "tipo": "codigo",
+          "enunciado": "Usando as variáveis já criadas e uma f-string, faça o programa mostrar exatamente a linha esperada.",
+          "mostraEsperado": true,
+          "inicial": "tema = \"A graça que basta\"\ntexto = \"2 Coríntios 12\"\n\n# escreva o print aqui",
+          "verificacao": "saida",
+          "esperado": "O tema A graça que basta será pregado em 2 Coríntios 12.",
+          "dica": "Comece com print(f\" e coloque cada variável entre chaves, no lugar exato onde ela deve aparecer na frase. O ponto final faz parte do texto.",
+          "solucao": "tema = \"A graça que basta\"\ntexto = \"2 Coríntios 12\"\n\nprint(f\"O tema {tema} será pregado em {texto}.\")"
+        }
+      ]
+    }
+  ],
+
+  "proximas": [
+    "Contas e conversões",
+    "Perguntar ao usuário sem input",
+    "Recapitulação do Módulo 1"
+  ]
+}
