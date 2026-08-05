@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F1B33">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>CODEX — Laboratório Python</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+
+<style>
+:root{
+  --tinta:      #0F1B33;
+  --tinta-alta: #16243F;
+  --tinta-baixa:#0A1326;
+  --linha:      #24344F;
+  --ouro:       #C9A227;
+  --ouro-fraco: #8A701A;
+  --pergaminho: #E8E4D9;
+  --neblina:    #93A1B8;
+  --verde:      #74C39A;
+  --rubro:      #E8837E;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+*{ box-sizing:border-box; }
+
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  background:var(--tinta);
+  color:var(--pergaminho);
+  font-family:"Cormorant Garamond", Georgia, serif;
+  font-size:17px;
+  display:flex;
+  flex-direction:column;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  -webkit-text-size-adjust:100%;
+}
+
+/* ---------- Cabeçalho ---------- */
+
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 18px;
+  border-bottom:1px solid var(--linha);
+  background:var(--tinta-baixa);
+  flex-wrap:wrap;
+}
+
+.marca{ display:flex; align-items:center; gap:12px; }
+
+.marca h1{
+  font-family:"Cinzel", serif;
+  font-size:19px;
+  font-weight:600;
+  letter-spacing:.16em;
+  margin:0;
+  color:var(--pergaminho);
+}
+
+.marca h1 small{
+  display:block;
+  font-family:"Cormorant Garamond", serif;
+  font-size:13px;
+  letter-spacing:.06em;
+  font-style:italic;
+  color:var(--neblina);
+  font-weight:400;
+}
+
+/* A lâmpada: o elemento que conta o estado do motor Python */
+.lampada{
+  width:13px; height:13px;
+  border-radius:50%;
+  background:var(--linha);
+  border:1px solid var(--ouro-fraco);
+  flex:none;
+  transition:background .3s, box-shadow .3s;
+}
+body[data-estado="carregando"] .lampada{
+  background:var(--ouro-fraco);
+  animation:pulsar 1.5s ease-in-out infinite;
+}
+body[data-estado="pronto"]   .lampada{ background:var(--ouro); box-shadow:0 0 12px rgba(201,162,39,.55); }
+body[data-estado="rodando"]  .lampada{ background:var(--verde); box-shadow:0 0 12px rgba(116,195,154,.55); animation:pulsar .9s ease-in-out infinite; }
+body[data-estado="falha"]    .lampada{ background:var(--rubro); box-shadow:0 0 12px rgba(232,131,126,.5); }
+
+@keyframes pulsar{ 0%,100%{ opacity:1 } 50%{ opacity:.35 } }
+@media (prefers-reduced-motion:reduce){ .lampada{ animation:none !important; } }
+
+#estado{
+  font-size:14px;
+  color:var(--neblina);
+  font-style:italic;
+}
+
+/* ---------- Exemplos ---------- */
+
+.exemplos{
+  display:flex;
+  gap:8px;
+  padding:10px 18px;
+  overflow-x:auto;
+  border-bottom:1px solid var(--linha);
+  scrollbar-width:none;
+}
+.exemplos::-webkit-scrollbar{ display:none; }
+
+.exemplos button{
+  flex:none;
+  background:transparent;
+  border:1px solid var(--linha);
+  color:var(--neblina);
+  border-radius:999px;
+  padding:5px 14px;
+  font-family:"Cormorant Garamond", serif;
+  font-size:15px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:border-color .2s, color .2s;
+}
+.exemplos button:hover{ border-color:var(--ouro); color:var(--pergaminho); }
+.exemplos button:focus-visible{ outline:2px solid var(--ouro); outline-offset:2px; }
+
+/* ---------- Painéis ---------- */
+
+main{
+  flex:1;
+  min-height:0;
+  display:grid;
+  grid-template-rows:minmax(250px,1.15fr) minmax(170px,1fr);
+  gap:1px;
+  background:var(--linha);
+}
+
+@media (min-width:940px){
+  main{
+    grid-template-rows:1fr;
+    grid-template-columns:1.05fr 1fr;
+  }
+}
+
+.painel{
+  background:var(--tinta);
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  min-width:0;
+}
+
+.rotulo{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:8px 18px;
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--neblina);
+  border-bottom:1px solid var(--linha);
+  background:var(--tinta-baixa);
+}
+.rotulo span{ color:var(--ouro-fraco); font-size:11px; letter-spacing:.08em; text-transform:none; }
+
+.area-editor{ flex:1; min-height:0; overflow:hidden; position:relative; }
+
+/* ---------- CodeMirror, tema "vidas" ---------- */
+
+.CodeMirror{
+  height:100% !important;
+  font-family:var(--mono) !important;
+  font-size:14px;
+  line-height:1.65;
+  background:var(--tinta);
+  color:var(--pergaminho);
+}
+.cm-s-vidas .CodeMirror-gutters{ background:var(--tinta-baixa); border-right:1px solid var(--linha); }
+.cm-s-vidas .CodeMirror-linenumber{ color:#3E5170; font-size:12px; }
+.cm-s-vidas .CodeMirror-cursor{ border-left:2px solid var(--ouro); }
+.cm-s-vidas .CodeMirror-selected{ background:rgba(201,162,39,.18); }
+.cm-s-vidas .CodeMirror-line::selection,
+.cm-s-vidas .CodeMirror-line > span::selection{ background:rgba(201,162,39,.25); }
+.cm-s-vidas .CodeMirror-activeline-background{ background:rgba(255,255,255,.03); }
+
+.cm-s-vidas .cm-keyword  { color:#E4A6C8; font-weight:500; }
+.cm-s-vidas .cm-builtin   { color:#8FC5F0; }
+.cm-s-vidas .cm-def       { color:var(--ouro); }
+.cm-s-vidas .cm-variable  { color:var(--pergaminho); }
+.cm-s-vidas .cm-variable-2{ color:#B8CDE8; }
+.cm-s-vidas .cm-string    { color:var(--verde); }
+.cm-s-vidas .cm-number    { color:#F0B87A; }
+.cm-s-vidas .cm-comment   { color:#5C6E8C; font-style:italic; }
+.cm-s-vidas .cm-operator  { color:var(--neblina); }
+.cm-s-vidas .cm-error     { color:var(--rubro); }
+
+/* Reserva para o fallback em textarea */
+#codigo-simples{
+  width:100%; height:100%;
+  background:var(--tinta);
+  color:var(--pergaminho);
+  border:0;
+  resize:none;
+  padding:12px 18px;
+  font-family:var(--mono);
+  font-size:14px;
+  line-height:1.65;
+  outline:none;
+  display:none;
+}
+
+/* ---------- Barra de símbolos ---------- */
+
+.simbolos{
+  display:flex;
+  gap:6px;
+  padding:8px 12px;
+  overflow-x:auto;
+  border-top:1px solid var(--linha);
+  background:var(--tinta-baixa);
+  scrollbar-width:none;
+}
+.simbolos::-webkit-scrollbar{ display:none; }
+
+.simbolos button{
+  flex:none;
+  min-width:38px;
+  height:36px;
+  padding:0 9px;
+  background:var(--tinta-alta);
+  border:1px solid var(--linha);
+  border-radius:7px;
+  color:var(--pergaminho);
+  font-family:var(--mono);
+  font-size:14px;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.simbolos button:active{ background:var(--ouro-fraco); }
+.simbolos button:focus-visible{ outline:2px solid var(--ouro); outline-offset:1px; }
+
+/* ---------- Ações ---------- */
+
+.acoes{
+  display:flex;
+  gap:10px;
+  padding:12px 18px;
+  border-top:1px solid var(--linha);
+  align-items:center;
+}
+
+button.acao{
+  font-family:"Cinzel", serif;
+  font-size:13px;
+  letter-spacing:.1em;
+  padding:10px 22px;
+  border-radius:6px;
+  cursor:pointer;
+  border:1px solid var(--ouro-fraco);
+  background:transparent;
+  color:var(--ouro);
+  transition:background .2s, color .2s, opacity .2s;
+}
+button.acao:hover:not(:disabled){ background:rgba(201,162,39,.12); }
+button.acao:focus-visible{ outline:2px solid var(--ouro); outline-offset:2px; }
+button.acao:disabled{ opacity:.35; cursor:not-allowed; }
+
+button.acao.principal{ background:var(--ouro); color:var(--tinta); border-color:var(--ouro); font-weight:600; }
+button.acao.principal:hover:not(:disabled){ background:#DCB43A; }
+
+button.acao.discreta{ border-color:var(--linha); color:var(--neblina); }
+button.acao.discreta:hover:not(:disabled){ background:rgba(255,255,255,.05); color:var(--pergaminho); }
+
+.atalho{ margin-left:auto; font-size:13px; color:#4A5C7A; font-style:italic; }
+@media (max-width:600px){ .atalho{ display:none; } }
+
+/* ---------- Saída ---------- */
+
+#saida{
+  flex:1;
+  min-height:0;
+  overflow:auto;
+  margin:0;
+  padding:14px 18px 20px;
+  font-family:var(--mono);
+  font-size:13.5px;
+  line-height:1.7;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+#saida .l-out{ color:var(--pergaminho); }
+#saida .l-err{ color:var(--rubro); }
+#saida .l-nota{ color:var(--neblina); font-family:"Cormorant Garamond",serif; font-size:16px; font-style:italic; }
+#saida .l-ok  { color:var(--verde); font-family:"Cormorant Garamond",serif; font-size:16px; font-style:italic; }
+
+/* A glosa: a dica pedagógica na margem, como um comentário marginal de manuscrito */
+#saida .glosa{
+  display:block;
+  margin:10px 0 4px;
+  padding:8px 0 8px 14px;
+  border-left:2px solid var(--ouro);
+  color:var(--ouro);
+  font-family:"Cormorant Garamond", serif;
+  font-size:16.5px;
+  font-style:italic;
+  white-space:normal;
+}
+
+#saida .vazio{ color:#3E5170; font-family:"Cormorant Garamond",serif; font-style:italic; font-size:16px; }
+
+/* ---------- Rodapé ---------- */
+
+footer{
+  padding:9px 18px calc(9px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--linha);
+  background:var(--tinta-baixa);
+  font-family:var(--mono);
+  font-size:10.5px;
+  letter-spacing:.05em;
+  color:#3E5170;
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+}
+</style>
+</head>
+
+<body data-estado="carregando">
+
+<header>
+  <div class="marca">
+    <span class="lampada" aria-hidden="true"></span>
+    <h1>CODEX<small>Laboratório Python — Fase 1</small></h1>
+  </div>
+  <div id="estado" role="status" aria-live="polite">Acordando o motor…</div>
+</header>
+
+<nav class="exemplos" id="exemplos" aria-label="Exemplos"></nav>
+
+<main>
+  <section class="painel">
+    <div class="rotulo">codigo.py</div>
+    <div class="area-editor">
+      <textarea id="codigo" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off"></textarea>
+      <textarea id="codigo-simples" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off"></textarea>
+    </div>
+    <div class="simbolos" id="simbolos" aria-label="Símbolos"></div>
+    <div class="acoes">
+      <button class="acao principal" id="btnRodar" disabled>Executar</button>
+      <button class="acao" id="btnParar" disabled>Parar</button>
+      <button class="acao discreta" id="btnLimpar">Limpar saída</button>
+      <span class="atalho">⌘ + Enter</span>
+    </div>
+  </section>
+
+  <section class="painel">
+    <div class="rotulo">Saída <span id="cronometro"></span></div>
+    <pre id="saida" aria-live="polite"><span class="vazio">A saída do seu código aparece aqui.</span></pre>
+  </section>
+</main>
+
+<footer>
+  <span id="diag-versao">motor: —</span>
+  <span id="diag-tempo">carga: —</span>
+  <span id="diag-editor">editor: —</span>
+</footer>
+
+
+<!-- ============================================================
+     Código do Web Worker. Fica aqui como texto puro e é
+     transformado em Blob para que todo o app caiba num só arquivo.
+     ============================================================ -->
+<script id="fonte-worker" type="text/plain">
+const BUILDS = [
+  "https://cdn.jsdelivr.net/pyodide/v314.0.3/full/",
+  "https://cdn.jsdelivr.net/pyodide/v0.28.3/full/"
+];
+
+let py = null;
+let prontoPromise = null;
+
+function avisar(tipo, dados){
+  self.postMessage(Object.assign({ tipo: tipo }, dados || {}));
+}
+
+const PREPARO = [
+  "import builtins, sys, traceback",
+  "",
+  "def _sem_input(prompt=''):",
+  "    raise RuntimeError('Neste laboratorio nao usamos input(). Escreva uma funcao que recebe parametros e devolve um valor.')",
+  "",
+  "builtins.input = _sem_input",
+  "",
+  "def _executar(_fonte):",
+  "    import linecache",
+  "    linecache.cache['codigo.py'] = (len(_fonte), None, _fonte.splitlines(True), 'codigo.py')",
+  "    _amb = {'__name__': '__main__'}",
+  "    try:",
+  "        _obj = compile(_fonte, 'codigo.py', 'exec')",
+  "    except SyntaxError as _e:",
+  "        return ''.join(traceback.format_exception_only(type(_e), _e))",
+  "    try:",
+  "        exec(_obj, _amb)",
+  "    except SystemExit:",
+  "        return None",
+  "    except BaseException as _e:",
+  "        _tb = _e.__traceback__.tb_next",
+  "        return ''.join(traceback.TracebackException(type(_e), _e, _tb).format())",
+  "    return None",
+  ""
+].join("\n");
+
+async function ligar(){
+  let ultimoErro = null;
+
+  for (const base of BUILDS){
+    try{
+      avisar("estado", { texto: "Baixando o Python…" });
+      const mod = await import(base + "pyodide.mjs");
+      py = await mod.loadPyodide({ indexURL: base });
+
+      py.setStdout({ batched: (t) => avisar("linha", { texto: t, fluxo: "out" }) });
+      py.setStderr({ batched: (t) => avisar("linha", { texto: t, fluxo: "err" }) });
+
+      py.runPython(PREPARO);
+
+      const versao = py.runPython("import sys; sys.version.split()[0]");
+      avisar("pronto", { versao: versao, base: base });
+      return;
+    }catch(e){
+      ultimoErro = e;
+      py = null;
+    }
+  }
+
+  avisar("falha", { texto: String((ultimoErro && ultimoErro.message) || ultimoErro || "desconhecido") });
+}
+
+self.onmessage = async (evento) => {
+  const msg = evento.data;
+
+  if (msg.tipo === "ligar"){
+    prontoPromise = ligar();
+    await prontoPromise;
+    return;
+  }
+
+  if (msg.tipo === "rodar"){
+    if (prontoPromise) { await prontoPromise; }
+    if (!py){
+      avisar("fim", { id: msg.id, erro: "O motor Python não está disponível." });
+      return;
+    }
+
+    try{
+      try{
+        await py.loadPackagesFromImports(msg.codigo);
+      }catch(e){ /* biblioteca indisponível: o próprio Python vai relatar */ }
+
+      const fn = py.globals.get("_executar");
+      const erro = fn(msg.codigo);
+      fn.destroy();
+      avisar("fim", { id: msg.id, erro: erro || null });
+    }catch(e){
+      avisar("fim", { id: msg.id, erro: String((e && e.message) || e) });
+    }
+  }
+};
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+
+<script>
+(function(){
+  "use strict";
+
+  var LIMITE_MS = 6000;
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  var elEstado    = $("estado");
+  var elSaida     = $("saida");
+  var elCron      = $("cronometro");
+  var btnRodar    = $("btnRodar");
+  var btnParar    = $("btnParar");
+  var btnLimpar   = $("btnLimpar");
+  var diagVersao  = $("diag-versao");
+  var diagTempo   = $("diag-tempo");
+  var diagEditor  = $("diag-editor");
+
+  /* ---------------- Editor ---------------- */
+
+  var editor = null;
+  var usandoCM = false;
+
+  var CODIGO_INICIAL = [
+    "# Bem-vindo ao laboratório. Edite à vontade e clique em Executar.",
+    "",
+    "livros = [\"Gênesis\", \"Êxodo\", \"Levítico\", \"Números\", \"Deuteronômio\"]",
+    "",
+    "for numero, livro in enumerate(livros, start=1):",
+    "    print(f\"{numero}. {livro} tem {len(livro)} letras\")",
+    "",
+    "print(f\"São {len(livros)} livros no Pentateuco.\")"
+  ].join("\n");
+
+  function montarEditor(){
+    var ta = $("codigo");
+    var simples = $("codigo-simples");
+
+    if (window.CodeMirror){
+      editor = CodeMirror.fromTextArea(ta, {
+        mode: "python",
+        theme: "vidas",
+        lineNumbers: true,
+        indentUnit: 4,
+        tabSize: 4,
+        indentWithTabs: false,
+        styleActiveLine: true,
+        lineWrapping: true,
+        smartIndent: true,
+        extraKeys: {
+          Tab: function(cm){ cm.replaceSelection("    "); },
+          "Ctrl-Enter": executar,
+          "Cmd-Enter": executar
+        }
+      });
+      editor.setValue(CODIGO_INICIAL);
+      usandoCM = true;
+      diagEditor.textContent = "editor: CodeMirror 5.65";
+    } else {
+      ta.style.display = "none";
+      simples.style.display = "block";
+      simples.value = CODIGO_INICIAL;
+      simples.addEventListener("keydown", function(e){
+        if (e.key === "Tab"){
+          e.preventDefault();
+          inserir("    ");
+        }
+        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)){
+          e.preventDefault();
+          executar();
+        }
+      });
+      diagEditor.textContent = "editor: texto simples";
+    }
+  }
+
+  function lerCodigo(){
+    return usandoCM ? editor.getValue() : $("codigo-simples").value;
+  }
+
+  function escreverCodigo(txt){
+    if (usandoCM){ editor.setValue(txt); editor.focus(); }
+    else { $("codigo-simples").value = txt; $("codigo-simples").focus(); }
+  }
+
+  function inserir(txt){
+    if (usandoCM){
+      editor.replaceSelection(txt);
+      editor.focus();
+      return;
+    }
+    var el = $("codigo-simples");
+    var i = el.selectionStart, f = el.selectionEnd;
+    el.value = el.value.slice(0, i) + txt + el.value.slice(f);
+    el.selectionStart = el.selectionEnd = i + txt.length;
+    el.focus();
+  }
+
+  /* ---------------- Barra de símbolos ---------------- */
+
+  var SIMBOLOS = [
+    { rot: "⇥", ins: "    " },
+    { rot: ":", ins: ":" },
+    { rot: "_", ins: "_" },
+    { rot: "( )", ins: "()", volta: 1 },
+    { rot: "[ ]", ins: "[]", volta: 1 },
+    { rot: "{ }", ins: "{}", volta: 1 },
+    { rot: "\" \"", ins: "\"\"", volta: 1 },
+    { rot: "=", ins: " = " },
+    { rot: "==", ins: " == " },
+    { rot: "!=", ins: " != " },
+    { rot: "<", ins: " < " },
+    { rot: ">", ins: " > " },
+    { rot: "+", ins: " + " },
+    { rot: "-", ins: " - " },
+    { rot: "*", ins: " * " },
+    { rot: "/", ins: " / " },
+    { rot: "%", ins: " % " },
+    { rot: ",", ins: ", " },
+    { rot: ".", ins: "." },
+    { rot: "#", ins: "# " }
+  ];
+
+  function montarSimbolos(){
+    var barra = $("simbolos");
+    SIMBOLOS.forEach(function(s){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = s.rot;
+      b.setAttribute("aria-label", "Inserir " + s.rot);
+      b.addEventListener("mousedown", function(e){ e.preventDefault(); });
+      b.addEventListener("click", function(){
+        inserir(s.ins);
+        if (s.volta && usandoCM){
+          var pos = editor.getCursor();
+          editor.setCursor({ line: pos.line, ch: pos.ch - s.volta });
+          editor.focus();
+        } else if (s.volta){
+          var el = $("codigo-simples");
+          el.selectionStart = el.selectionEnd = el.selectionStart - s.volta;
+        }
+      });
+      barra.appendChild(b);
+    });
+  }
+
+  /* ---------------- Exemplos ---------------- */
+
+  var EXEMPLOS = [
+    { nome: "Primeiro passo", codigo: [
+      "nome = \"Bispo Enéas\"",
+      "igreja = \"Igreja Vidas\"",
+      "",
+      "print(f\"{nome} serve na {igreja}.\")",
+      "print(\"Paz do Senhor!\")"
+    ].join("\n") },
+
+    { nome: "Decisão", codigo: [
+      "presentes = 143",
+      "capacidade = 120",
+      "",
+      "if presentes > capacidade:",
+      "    print(\"Precisamos abrir o salão anexo.\")",
+      "elif presentes == capacidade:",
+      "    print(\"Casa cheia, exatamente no limite.\")",
+      "else:",
+      "    print(f\"Ainda cabem {capacidade - presentes} pessoas.\")"
+    ].join("\n") },
+
+    { nome: "Função", codigo: [
+      "def contar_palavras(texto):",
+      "    \"\"\"Devolve quantas palavras há no texto.\"\"\"",
+      "    return len(texto.split())",
+      "",
+      "",
+      "esboco = \"A graça é maior que a nossa maior necessidade\"",
+      "",
+      "print(contar_palavras(esboco))",
+      "print(contar_palavras(\"Amém\"))"
+    ].join("\n") },
+
+    { nome: "Dicionário", codigo: [
+      "escala = {",
+      "    \"domingo manhã\": \"Enéas\",",
+      "    \"domingo tarde\": \"Paulo\",",
+      "    \"domingo noite\": \"Enéas\",",
+      "}",
+      "",
+      "for culto, pregador in escala.items():",
+      "    print(f\"{culto:<16} -> {pregador}\")",
+      "",
+      "print()",
+      "print(\"Total de cultos:\", len(escala))"
+    ].join("\n") },
+
+    { nome: "Erro proposital", codigo: [
+      "# Repare como o erro é explicado abaixo.",
+      "",
+      "versiculos = [\"Jo 3.16\", \"Rm 8.28\", \"Sl 23.1\"]",
+      "",
+      "print(versiculos[7])"
+    ].join("\n") },
+
+    { nome: "Laço infinito", codigo: [
+      "# Este código NUNCA termina sozinho.",
+      "# Serve para você ver o laboratório se defender.",
+      "",
+      "contador = 0",
+      "while True:",
+      "    contador = contador + 1"
+    ].join("\n") }
+  ];
+
+  function montarExemplos(){
+    var nav = $("exemplos");
+    EXEMPLOS.forEach(function(ex){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = ex.nome;
+      b.addEventListener("click", function(){ escreverCodigo(ex.codigo); });
+      nav.appendChild(b);
+    });
+  }
+
+  /* ---------------- Saída ---------------- */
+
+  function limparSaida(){ elSaida.innerHTML = ""; }
+
+  function escrever(texto, classe){
+    var span = document.createElement("span");
+    span.className = classe || "l-out";
+    span.textContent = texto.replace(/\n$/, "") + "\n";
+    elSaida.appendChild(span);
+    elSaida.scrollTop = elSaida.scrollHeight;
+  }
+
+  function glosar(texto){
+    var span = document.createElement("span");
+    span.className = "glosa";
+    span.textContent = texto;
+    elSaida.appendChild(span);
+    elSaida.scrollTop = elSaida.scrollHeight;
+  }
+
+  /* Dicas de primeiro socorro — um ensaio do tutor de IA da Fase 3 */
+  var DICAS = {
+    "SyntaxError":      "Python não conseguiu nem ler o código. Procure dois-pontos faltando no fim de um if, for ou def, ou um parêntese/aspas que você abriu e não fechou.",
+    "IndentationError": "O recuo está errado. Tudo que pertence a um if, for ou def precisa estar deslocado quatro espaços à direita — e sempre a mesma quantidade.",
+    "TabError":         "Você misturou tabulação e espaços no recuo. Use apenas espaços: o botão ⇥ da barra insere quatro.",
+    "NameError":        "Você usou um nome que Python nunca viu. Ou ele foi escrito com grafia diferente de onde foi criado, ou está sendo usado antes de existir.",
+    "TypeError":        "Você pediu uma operação entre tipos incompatíveis — somar texto com número, por exemplo. Converta antes com int(), float() ou str().",
+    "ValueError":       "O tipo estava certo, mas o valor não serve. É o caso de int(\"paz\"): é texto, mas não é um número.",
+    "IndexError":       "Você pediu uma posição que não existe na lista. Lembre-se: a primeira posição é 0, e numa lista de 3 itens a última é 2.",
+    "KeyError":         "Essa chave não existe no dicionário. Confira a grafia, ou use .get(chave) para receber None em vez de um erro.",
+    "ZeroDivisionError":"Divisão por zero. Teste se o divisor é diferente de zero antes de dividir.",
+    "AttributeError":   "Você chamou um método que esse tipo de objeto não possui. Confira se a variável é mesmo o que você imagina que ela seja.",
+    "RecursionError":   "Uma função ficou chamando a si mesma sem parar. Toda recursão precisa de uma condição de parada.",
+    "ModuleNotFoundError":"Essa biblioteca não está disponível aqui. Só existem as do Python padrão e algumas científicas."
+  };
+
+  function relatarErro(bruto){
+    var texto = bruto.replace("Traceback (most recent call last):", "Rastreamento (a última chamada é a de baixo):");
+    escrever(texto, "l-err");
+
+    var linhas = bruto.trim().split("\n");
+    var ultima = linhas[linhas.length - 1] || "";
+    var tipo = (ultima.match(/^([A-Za-z_]+Error)\b/) || [])[1];
+
+    if (tipo && DICAS[tipo]) { glosar(DICAS[tipo]); }
+  }
+
+  /* ---------------- Worker ---------------- */
+
+  var worker = null;
+  var pronto = false;
+  var rodando = false;
+  var relogio = null;
+  var tempoLimite = null;
+  var t0 = 0;
+  var tCarga = 0;
+  var idExec = 0;
+
+  function definirEstado(chave, texto){
+    document.body.dataset.estado = chave;
+    elEstado.textContent = texto;
+  }
+
+  function criarWorker(){
+    var fonte = $("fonte-worker").textContent;
+    var url = URL.createObjectURL(new Blob([fonte], { type: "text/javascript" }));
+
+    try{
+      worker = new Worker(url, { type: "module" });
+    }catch(e){
+      definirEstado("falha", "Este navegador não suporta workers de módulo.");
+      return;
+    }
+
+    worker.onmessage = function(ev){
+      var m = ev.data;
+
+      if (m.tipo === "estado"){
+        definirEstado("carregando", m.texto);
+      }
+
+      else if (m.tipo === "pronto"){
+        pronto = true;
+        tCarga = Math.round(performance.now() - tInicio);
+        definirEstado("pronto", "Motor pronto");
+        btnRodar.disabled = false;
+        diagVersao.textContent = "motor: Python " + m.versao;
+        diagTempo.textContent  = "carga: " + (tCarga / 1000).toFixed(1) + "s";
+      }
+
+      else if (m.tipo === "falha"){
+        definirEstado("falha", "Não consegui carregar o Python");
+        limparSaida();
+        escrever("Falha ao iniciar o motor Python.", "l-err");
+        escrever(m.texto, "l-err");
+        glosar("Verifique a conexão com a internet. O laboratório precisa baixar o Python na primeira vez que roda em cada aparelho.");
+      }
+
+      else if (m.tipo === "linha"){
+        escrever(m.texto, m.fluxo === "err" ? "l-err" : "l-out");
+      }
+
+      else if (m.tipo === "fim"){
+        if (m.id !== idExec) { return; }
+        finalizar();
+        if (m.erro) { relatarErro(m.erro); }
+        else if (!elSaida.textContent.trim()){
+          glosar("O código rodou sem erros, mas não imprimiu nada. Use print() para ver algum resultado.");
+        }
+      }
+    };
+
+    worker.onerror = function(){
+      definirEstado("falha", "Erro no motor");
+    };
+
+    worker.postMessage({ tipo: "ligar" });
+  }
+
+  var tInicio = performance.now();
+
+  /* ---------------- Execução ---------------- */
+
+  function executar(){
+    if (!pronto || rodando) { return; }
+
+    rodando = true;
+    idExec = idExec + 1;
+    var meuId = idExec;
+
+    limparSaida();
+    definirEstado("rodando", "Executando…");
+    btnRodar.disabled = true;
+    btnParar.disabled = false;
+
+    t0 = performance.now();
+    elCron.textContent = "0,0 s";
+    relogio = setInterval(function(){
+      elCron.textContent = ((performance.now() - t0) / 1000).toFixed(1).replace(".", ",") + " s";
+    }, 100);
+
+    tempoLimite = setTimeout(function(){
+      if (rodando && idExec === meuId) { interromper(true); }
+    }, LIMITE_MS);
+
+    worker.postMessage({ tipo: "rodar", codigo: lerCodigo(), id: meuId });
+  }
+
+  function finalizar(){
+    rodando = false;
+    clearTimeout(tempoLimite);
+    clearInterval(relogio);
+    elCron.textContent = ((performance.now() - t0) / 1000).toFixed(1).replace(".", ",") + " s";
+    btnRodar.disabled = false;
+    btnParar.disabled = true;
+    if (pronto) { definirEstado("pronto", "Motor pronto"); }
+  }
+
+  function interromper(porTempo){
+    if (!rodando) { return; }
+
+    idExec = idExec + 1;
+    worker.terminate();
+    pronto = false;
+    finalizar();
+    btnRodar.disabled = true;
+
+    if (porTempo){
+      escrever("— execução interrompida após " + (LIMITE_MS / 1000) + " segundos —", "l-err");
+      glosar("Seu código não terminou sozinho. Quase sempre isso é um laço que nunca chega à condição de parada: verifique se algo dentro do while realmente muda o valor que ele está testando.");
+    } else {
+      escrever("— execução interrompida por você —", "l-nota");
+    }
+
+    definirEstado("carregando", "Religando o motor…");
+    tInicio = performance.now();
+    criarWorker();
+  }
+
+  /* ---------------- Ligação dos controles ---------------- */
+
+  btnRodar.addEventListener("click", executar);
+  btnParar.addEventListener("click", function(){ interromper(false); });
+  btnLimpar.addEventListener("click", function(){
+    elSaida.innerHTML = "<span class=\"vazio\">A saída do seu código aparece aqui.</span>";
+    elCron.textContent = "";
+  });
+
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)){
+      e.preventDefault();
+      executar();
+    }
+  });
+
+  montarEditor();
+  montarSimbolos();
+  montarExemplos();
+  criarWorker();
+
+})();
+</script>
+
+</body>
+</html>
