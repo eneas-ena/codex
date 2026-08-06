@@ -190,6 +190,11 @@ textarea.simples{width:100%;min-height:170px;background:var(--tinta-baixa);color
 .simbolos button:active{background:var(--ouro-fraco)}
 .simbolos .setas{border-color:var(--ouro-fraco);color:var(--ouro)}
 
+/* Em tela larga a barra quebra em linhas, em vez de rolar na horizontal */
+@media (min-width:720px){
+  .simbolos{flex-wrap:wrap;overflow-x:visible;row-gap:6px}
+}
+
 /* ---------------- Botões ---------------- */
 .acoes{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
 button.acao{font-family:var(--display);font-size:12.5px;letter-spacing:.1em;padding:10px 20px;
@@ -451,9 +456,9 @@ var CONFIG = {
   supabaseUrl : "https://ghjbljypxksubmcsvaig.supabase.co",
   supabaseKey : "sb_publishable_qXCYqg1WdmelY9D1mptZXg_U8NdoKby",
   perfil      : "bispo",
-  modulos     : ["curso/m01.json"],
+  modulos     : ["curso/m01.json", "curso/m02.json"],
   emBreve     : [
-    "Decisões", "Repetição", "Listas e tuplas", "Dicionários e conjuntos",
+    "Repetição", "Listas e tuplas", "Dicionários e conjuntos",
     "Funções", "Texto", "Dados e arquivos", "Erros e depuração", "Objetos e módulos"
   ],
   limiteMs    : 6000

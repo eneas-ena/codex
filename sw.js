@@ -16,7 +16,7 @@
    do CACHE abaixo (de v1 para v2) e suba o arquivo: isso apaga tudo.
    ===================================================================== */
 
-var CACHE = "codex-v2";
+var CACHE = "codex-v3";
 
 var EXTERNOS = [
   "cdn.jsdelivr.net",
@@ -30,6 +30,7 @@ var ESSENCIAIS = [
   "./index.html",
   "./manifest.json",
   "./curso/m01.json",
+  "./curso/m02.json",
   "./icone-192.png",
   "./apple-touch-icon.png"
 ];
