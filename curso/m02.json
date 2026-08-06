@@ -1,0 +1,615 @@
+{
+  "modulo": 2,
+  "titulo": "Decisões",
+  "subtitulo": "Onde Python deixa de ser calculadora e começa a escolher caminhos.",
+  "licoes": [
+    {
+      "id": "m02l01",
+      "numero": 1,
+      "titulo": "Verdadeiro ou falso",
+      "resumo": "Um terceiro tipo de valor, e as perguntas que Python sabe responder.",
+      "conceito": [
+        {
+          "tipo": "texto",
+          "conteudo": "Você conhece três tipos até aqui: texto, inteiro e decimal. Falta o quarto, e é o mais simples de todos, porque só tem dois valores possíveis: True e False. O tipo se chama bool, em homenagem ao matemático George Boole."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "houveCulto = True\nchoveu = False\n\nprint(houveCulto)\nprint(type(choveu))",
+          "nota": "Repare em duas coisas: começam com maiúscula, e não levam aspas. True com aspas seria texto, não valor lógico."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Você raramente vai escrever True e False à mão. Quase sempre eles nascem de uma comparação — uma pergunta que Python responde com sim ou não."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "presentes = 143\ncapacidade = 120\n\nprint(presentes > capacidade)\nprint(presentes < capacidade)\nprint(presentes == capacidade)",
+          "nota": "Cada linha é uma pergunta, e cada resposta é um bool. Nada foi decidido ainda: por ora Python só está constatando."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "São seis comparações ao todo. Maior que, menor que, e as duas versões com ou igual, escritas com o sinal de igual depois. Além delas, a igualdade, com dois sinais de igual, e a diferença, com exclamação e igual."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(10 > 5)\nprint(10 < 5)\nprint(10 >= 10)\nprint(10 <= 9)\nprint(10 == 10)\nprint(10 != 10)",
+          "nota": "Leia cada uma em voz alta como pergunta: dez é maior que cinco? Dez é diferente de dez? A resposta vem logo abaixo."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "Aqui está o erro mais comum de toda a programação, e vale a pena decorar. Um sinal de igual manda guardar. Dois sinais de igual perguntam se é igual. Escrever presentes = 120 dentro de uma pergunta não pergunta nada: apaga o valor de presentes e põe 120 no lugar."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "As comparações também funcionam com texto. A igualdade compara letra por letra, e é sensível a maiúsculas e acentos — Enéas e enéas são diferentes para Python, assim como Enéas e Eneas."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "pregador = \"Enéas\"\n\nprint(pregador == \"Enéas\")\nprint(pregador == \"enéas\")\nprint(pregador != \"Paulo\")",
+          "nota": "A segunda linha é False só por causa de uma maiúscula. Guarde isso: comparação de texto não perdoa diferença nenhuma."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "E como toda resposta é um valor, ela pode ser guardada numa variável e usada depois. Isso deixa o código bem mais legível."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "presentes = 143\ncapacidade = 120\n\nlotou = presentes >= capacidade\n\nprint(f\"Lotou? {lotou}\")",
+          "nota": "O nome lotou diz o que a comparação significa. Quem ler o código depois entende sem precisar refazer a conta de cabeça."
+        }
+      ],
+      "laboratorio": {
+        "instrucao": "Rode e depois mude os números para inverter cada resposta. Experimente também trocar um == por um = só, dentro do print, e veja o que Python diz.",
+        "codigo": "membros = 210\npresentes = 143\ncapacidade = 120\n\nprint(f\"Lotou?          {presentes >= capacidade}\")\nprint(f\"Faltou gente?   {presentes < membros}\")\nprint(f\"Casa exata?     {presentes == capacidade}\")\nprint(f\"Sobrou espaço?  {presentes != capacidade}\")"
+      },
+      "exercicios": [
+        {
+          "id": "e1",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "print(7 >= 7)",
+          "opcoes": ["True", "False", "7", "Erro"],
+          "correta": 0,
+          "explicacao": "O sinal maior ou igual aceita as duas situações. Sete não é maior que sete, mas é igual — e isso basta para a resposta ser True."
+        },
+        {
+          "id": "e2",
+          "tipo": "escolha",
+          "enunciado": "Qual destas linhas pergunta se as duas variáveis têm o mesmo valor?",
+          "opcoes": [
+            "presentes = capacidade",
+            "presentes == capacidade",
+            "presentes != capacidade",
+            "presentes >= capacidade"
+          ],
+          "correta": 1,
+          "explicacao": "Dois sinais de igual perguntam. Um sinal só manda guardar, e apagaria o valor de presentes. A terceira opção pergunta o contrário: se são diferentes."
+        },
+        {
+          "id": "e3",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "resposta = \"True\"\n\nprint(type(resposta))",
+          "opcoes": [
+            "<class 'bool'>",
+            "<class 'str'>",
+            "True",
+            "Erro, porque True não pode levar aspas"
+          ],
+          "correta": 1,
+          "explicacao": "Com aspas, True é apenas uma palavra de quatro letras — texto comum. O valor lógico se escreve sem aspas."
+        },
+        {
+          "id": "e4",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "igreja = \"Igreja Vidas\"\n\nprint(igreja == \"igreja vidas\")",
+          "opcoes": ["True", "False", "Igreja Vidas", "Erro"],
+          "correta": 1,
+          "explicacao": "A comparação de texto distingue maiúsculas de minúsculas. Duas letras diferentes já bastam para a resposta ser False."
+        },
+        {
+          "id": "e5",
+          "tipo": "codigo",
+          "enunciado": "Crie três variáveis lógicas a partir dos dados abaixo: lotou (presentes é maior ou igual à capacidade), vazio (presentes é menor que 50) e exato (presentes é igual à capacidade). Use comparações, não escreva True nem False à mão.",
+          "inicial": "presentes = 143\ncapacidade = 120\n\n# crie as três variáveis aqui",
+          "verificacao": "expressao",
+          "testes": [
+            { "rotulo": "lotou", "chamada": "lotou", "esperado": "True" },
+            { "rotulo": "vazio", "chamada": "vazio", "esperado": "False" },
+            { "rotulo": "exato", "chamada": "exato", "esperado": "False" }
+          ],
+          "dica": "Cada linha tem o formato nome = comparação. Por exemplo: lotou = presentes >= capacidade. Não precisa de parênteses nem de if.",
+          "solucao": "presentes = 143\ncapacidade = 120\n\nlotou = presentes >= capacidade\nvazio = presentes < 50\nexato = presentes == capacidade"
+        },
+        {
+          "id": "e6",
+          "tipo": "codigo",
+          "enunciado": "Compare as duas ofertas e produza exatamente as três linhas esperadas, usando f-strings com comparações dentro das chaves.",
+          "mostraEsperado": true,
+          "inicial": "manha = 840.50\nnoite = 1105.25\n\n# escreva os três prints aqui",
+          "verificacao": "saida",
+          "esperado": "Manhã maior: False\nNoite maior: True\nIguais: False",
+          "dica": "Dentro das chaves de uma f-string cabe qualquer expressão, inclusive uma comparação. Por exemplo: print(f\"Manhã maior: {manha > noite}\")",
+          "solucao": "manha = 840.50\nnoite = 1105.25\n\nprint(f\"Manhã maior: {manha > noite}\")\nprint(f\"Noite maior: {noite > manha}\")\nprint(f\"Iguais: {manha == noite}\")"
+        }
+      ]
+    },
+
+    {
+      "id": "m02l02",
+      "numero": 2,
+      "titulo": "Se, e senão",
+      "resumo": "Fazer o programa tomar um caminho ou outro, conforme a resposta.",
+      "conceito": [
+        {
+          "tipo": "texto",
+          "conteudo": "Até aqui Python respondia perguntas e seguia adiante do mesmo jeito. O comando if muda isso: ele executa um trecho do código somente se a resposta for True."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "presentes = 143\n\nif presentes > 120:\n    print(\"Abrir o salão anexo\")\n\nprint(\"Fim da verificação\")",
+          "nota": "A última linha aparece sempre. A do meio só aparece porque 143 é mesmo maior que 120."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Repare em duas exigências de escrita. A linha do if termina em dois-pontos, sem exceção. E a linha seguinte é deslocada quatro espaços à direita. Esse deslocamento se chama indentação, e não é enfeite: é ele que diz a Python o que pertence ao if."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "presentes = 90\n\nif presentes > 120:\n    print(\"Esta linha pertence ao if\")\n    print(\"Esta também\")\n\nprint(\"Esta não, porque voltou à margem\")",
+          "nota": "Com 90 presentes a condição é falsa, e as duas linhas indentadas são puladas de uma vez. Só a última aparece."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "Em outras linguagens a indentação é boa educação; em Python é gramática. Errar o recuo não deixa o código feio: muda o significado, ou produz IndentationError. Use sempre quatro espaços, e o botão ⇥ da barra os insere de uma vez."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "O else completa o quadro. Ele é o senão: o caminho tomado quando a condição foi falsa. Não leva condição própria, porque a condição já foi feita no if — leva apenas os dois-pontos."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "presentes = 90\ncapacidade = 120\n\nif presentes > capacidade:\n    print(\"Precisamos de mais cadeiras\")\nelse:\n    print(f\"Ainda cabem {capacidade - presentes} pessoas\")",
+          "nota": "Troque o 90 por 143 e rode de novo. Um dos dois caminhos sempre acontece, e nunca os dois."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Vale insistir nesse ponto porque ele é a essência do comando: com if e else, exatamente um dos blocos executa. Não zero, não dois. Python avalia a condição, escolhe o caminho, executa aquele bloco e ignora o outro por completo."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "A condição pode ser qualquer expressão que resulte em True ou False — inclusive uma variável lógica que você criou antes. Muitas vezes isso deixa o código mais legível do que espremer a comparação dentro do if."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "presentes = 143\ncapacidade = 120\n\nlotou = presentes >= capacidade\n\nif lotou:\n    print(\"Casa cheia\")\nelse:\n    print(\"Ainda há lugar\")",
+          "nota": "Escrito assim, o if quase vira português: se lotou, faça isto."
+        }
+      ],
+      "laboratorio": {
+        "instrucao": "Mude o valor de presentes e rode várias vezes: tente 90, 120, 121 e 200. Observe qual caminho é tomado em cada caso, e preste atenção especial ao que acontece exatamente em 120.",
+        "codigo": "presentes = 143\ncapacidade = 120\n\nif presentes > capacidade:\n    faltam = presentes - capacidade\n    print(\"Casa lotada.\")\n    print(f\"Faltam {faltam} lugares.\")\nelse:\n    sobram = capacidade - presentes\n    print(f\"Tudo tranquilo, sobram {sobram} lugares.\")\n\nprint(\"— fim do relatório —\")"
+      },
+      "exercicios": [
+        {
+          "id": "e1",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "idade = 15\n\nif idade >= 18:\n    print(\"Adulto\")\nelse:\n    print(\"Menor\")",
+          "opcoes": ["Adulto", "Menor", "Adulto e Menor", "Nada"],
+          "correta": 1,
+          "explicacao": "Quinze não é maior nem igual a dezoito, então a condição é falsa e o caminho do else é o executado. Com if e else, sempre exatamente um dos dois acontece."
+        },
+        {
+          "id": "e2",
+          "tipo": "escolha",
+          "enunciado": "Este código dá erro. O que falta?",
+          "codigo": "presentes = 143\n\nif presentes > 120\n    print(\"Lotou\")",
+          "opcoes": [
+            "Faltam os dois-pontos no fim da linha do if",
+            "Falta um else",
+            "Falta indentar a linha do if",
+            "Faltam parênteses ao redor da condição"
+          ],
+          "correta": 0,
+          "explicacao": "Toda linha de if termina em dois-pontos. Parênteses ao redor da condição são permitidos mas desnecessários em Python, ao contrário de outras linguagens."
+        },
+        {
+          "id": "e3",
+          "tipo": "escolha",
+          "enunciado": "Quantas linhas este código mostra?",
+          "codigo": "oferta = 500\n\nif oferta > 1000:\n    print(\"Meta batida\")\n    print(\"Parabéns\")\n\nprint(\"Relatório encerrado\")",
+          "opcoes": ["Nenhuma", "Uma", "Duas", "Três"],
+          "correta": 1,
+          "explicacao": "A condição é falsa, então as duas linhas indentadas são puladas. A última voltou à margem, não pertence ao if, e por isso aparece sempre."
+        },
+        {
+          "id": "e4",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "chuva = False\n\nif chuva:\n    print(\"Culto no salão\")\nelse:\n    print(\"Culto no pátio\")",
+          "opcoes": ["Culto no salão", "Culto no pátio", "False", "Erro, porque falta uma comparação"],
+          "correta": 1,
+          "explicacao": "A condição do if pode ser uma variável lógica pronta. Como chuva vale False, o caminho tomado é o do else."
+        },
+        {
+          "id": "e5",
+          "tipo": "codigo",
+          "enunciado": "Escreva um if que compare o total de inscritos com as vagas e produza exatamente a linha esperada. Com 48 inscritos e 60 vagas, devem sobrar 12.",
+          "mostraEsperado": true,
+          "inicial": "inscritos = 48\nvagas = 60\n\n# escreva o if e o else aqui",
+          "verificacao": "saida",
+          "esperado": "Ainda há 12 vagas",
+          "dica": "Se inscritos for maior ou igual a vagas, imprima Turma cheia. Senão, imprima f\"Ainda há {vagas - inscritos} vagas\". Não esqueça os dois-pontos e os quatro espaços.",
+          "solucao": "inscritos = 48\nvagas = 60\n\nif inscritos >= vagas:\n    print(\"Turma cheia\")\nelse:\n    print(f\"Ainda há {vagas - inscritos} vagas\")"
+        },
+        {
+          "id": "e6",
+          "tipo": "codigo",
+          "enunciado": "Este código tem dois problemas de escrita: um dos dois-pontos sumiu e uma linha está com o recuo errado. Conserte para que ele produza a linha esperada.",
+          "mostraEsperado": true,
+          "inicial": "oferta = 1840\nmeta = 1500\n\nif oferta >= meta\nprint(\"Meta alcançada\")\nelse:\n    print(\"Faltou pouco\")",
+          "verificacao": "saida",
+          "esperado": "Meta alcançada",
+          "dica": "A linha do if precisa terminar em dois-pontos. E o print logo abaixo dele precisa estar deslocado quatro espaços à direita, como já está o print do else.",
+          "solucao": "oferta = 1840\nmeta = 1500\n\nif oferta >= meta:\n    print(\"Meta alcançada\")\nelse:\n    print(\"Faltou pouco\")"
+        }
+      ]
+    },
+
+    {
+      "id": "m02l03",
+      "numero": 3,
+      "titulo": "Vários caminhos",
+      "resumo": "Quando não bastam dois desfechos, e a ordem das perguntas passa a importar.",
+      "conceito": [
+        {
+          "tipo": "texto",
+          "conteudo": "A vida raramente se divide em dois. Entre a casa cheia e a casa vazia há a casa quase cheia, e para esses casos existe o elif — uma abreviação de else if, ou senão se."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "presentes = 143\n\nif presentes >= 200:\n    print(\"Lotação máxima\")\nelif presentes >= 100:\n    print(\"Bom público\")\nelif presentes >= 50:\n    print(\"Público modesto\")\nelse:\n    print(\"Poucos presentes\")",
+          "nota": "Você pode encadear quantos elif quiser. O else no fim é opcional, e serve para o caso em que nenhuma das perguntas anteriores foi verdadeira."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "O funcionamento é o de uma peneira. Python testa a primeira condição; se for verdadeira, executa aquele bloco e abandona toda a corrente — nem olha as demais. Só se for falsa é que passa à seguinte."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "É por isso que a ordem importa tanto. Numa corrente de elif, apenas o primeiro caso verdadeiro acontece, mesmo que dois ou três também fossem verdadeiros. Escreva sempre do caso mais restrito para o mais amplo."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Veja o mesmo código com a ordem invertida, e repare como ele fica errado sem dar erro nenhum — que é a pior espécie de defeito."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "presentes = 250\n\nif presentes >= 50:\n    print(\"Público modesto\")\nelif presentes >= 100:\n    print(\"Bom público\")\nelif presentes >= 200:\n    print(\"Lotação máxima\")",
+          "nota": "Com 250 presentes a resposta deveria ser lotação máxima. Mas a primeira pergunta já era verdadeira, e a corrente parou ali. Python fez exatamente o que foi mandado."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Há uma diferença importante entre usar elif e empilhar vários if separados. Ifs separados são perguntas independentes: todas são testadas, e mais de uma pode acontecer. Uma corrente com elif é uma escolha única entre alternativas."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "nota = 95\n\nprint(\"— com ifs separados —\")\nif nota >= 70:\n    print(\"Aprovado\")\nif nota >= 90:\n    print(\"Com distinção\")\n\nprint(\"— com elif —\")\nif nota >= 70:\n    print(\"Aprovado\")\nelif nota >= 90:\n    print(\"Com distinção\")",
+          "nota": "No primeiro caso as duas mensagens aparecem, e é isso que se quer: são informações que se somam. No segundo, a distinção nunca aparece, porque a corrente parou na primeira verdadeira."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "A escolha entre um e outro depende da pergunta que você está fazendo. Se os casos se excluem — um culto é matinal ou noturno, nunca os dois — use elif. Se podem coexistir, use ifs separados."
+        }
+      ],
+      "laboratorio": {
+        "instrucao": "Uma classificação de frequência. Rode com o valor atual, depois teste 250, 100, 99, 49 e 0. Em seguida inverta a ordem das condições e veja como as respostas deixam de fazer sentido.",
+        "codigo": "presentes = 143\nmembros = 200\n\npercentual = presentes / membros * 100\n\nif percentual >= 90:\n    situacao = \"Excelente\"\nelif percentual >= 70:\n    situacao = \"Boa\"\nelif percentual >= 50:\n    situacao = \"Regular\"\nelse:\n    situacao = \"Preocupante\"\n\nprint(f\"Presentes: {presentes} de {membros}\")\nprint(f\"Frequência: {percentual}%\")\nprint(f\"Situação: {situacao}\")"
+      },
+      "exercicios": [
+        {
+          "id": "e1",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "valor = 150\n\nif valor >= 100:\n    print(\"Alto\")\nelif valor >= 50:\n    print(\"Médio\")\nelse:\n    print(\"Baixo\")",
+          "opcoes": ["Alto", "Médio", "Alto e Médio", "Baixo"],
+          "correta": 0,
+          "explicacao": "A primeira condição já é verdadeira, então a corrente inteira é abandonada. O valor 150 também é maior que 50, mas essa pergunta nunca chega a ser feita."
+        },
+        {
+          "id": "e2",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "valor = 150\n\nif valor >= 100:\n    print(\"Alto\")\nif valor >= 50:\n    print(\"Médio\")",
+          "opcoes": ["Alto", "Médio", "Alto e Médio", "Nada"],
+          "correta": 2,
+          "explicacao": "Sem o elif, são duas perguntas independentes. As duas são verdadeiras, e as duas mensagens aparecem. É a diferença essencial entre encadear e empilhar."
+        },
+        {
+          "id": "e3",
+          "tipo": "escolha",
+          "enunciado": "Esta corrente está mal ordenada. Qual classificação nunca vai aparecer, para nenhum valor?",
+          "codigo": "if idade >= 12:\n    print(\"Adolescente\")\nelif idade >= 18:\n    print(\"Adulto\")\nelif idade >= 60:\n    print(\"Idoso\")",
+          "opcoes": [
+            "Só Idoso",
+            "Adulto e Idoso",
+            "Só Adolescente",
+            "Nenhuma, o código está correto"
+          ],
+          "correta": 1,
+          "explicacao": "Qualquer idade a partir de 12 já satisfaz a primeira condição, e a corrente para ali. Adulto e Idoso são inalcançáveis. O conserto é inverter a ordem, começando pelo caso mais restrito."
+        },
+        {
+          "id": "e4",
+          "tipo": "escolha",
+          "enunciado": "Quantos blocos, no máximo, podem ser executados numa corrente de if, elif e else?",
+          "opcoes": [
+            "Todos os que forem verdadeiros",
+            "Exatamente um",
+            "No máximo dois",
+            "Depende da quantidade de elif"
+          ],
+          "correta": 1,
+          "explicacao": "A corrente inteira é uma escolha única: Python percorre até achar a primeira condição verdadeira, executa aquele bloco e ignora todo o resto. Se nenhuma for verdadeira e não houver else, nenhum bloco executa."
+        },
+        {
+          "id": "e5",
+          "tipo": "codigo",
+          "enunciado": "Classifique a duração de um sermão em minutos: 45 ou mais é Longo, 30 ou mais é Adequado, e abaixo disso é Curto. Guarde a resposta na variável classificacao.",
+          "inicial": "minutos = 38\n\n# escreva a corrente aqui",
+          "verificacao": "expressao",
+          "testes": [
+            { "rotulo": "classificacao", "chamada": "classificacao", "esperado": "'Adequado'" }
+          ],
+          "dica": "Comece pelo caso mais restrito: if minutos >= 45. Dentro de cada bloco, guarde o texto na variável em vez de imprimir: classificacao = \"Longo\".",
+          "solucao": "minutos = 38\n\nif minutos >= 45:\n    classificacao = \"Longo\"\nelif minutos >= 30:\n    classificacao = \"Adequado\"\nelse:\n    classificacao = \"Curto\""
+        },
+        {
+          "id": "e6",
+          "tipo": "codigo",
+          "enunciado": "Um boletim do curso teológico. Nota 90 ou mais é conceito A, 80 ou mais é B, 70 ou mais é C, e abaixo disso é Reprovado. Produza exatamente a linha esperada.",
+          "mostraEsperado": true,
+          "inicial": "aluno = \"Marcos\"\nnota = 84\n\n# escreva a corrente e o print",
+          "verificacao": "saida",
+          "esperado": "Marcos: conceito B",
+          "dica": "Guarde o conceito numa variável dentro de cada bloco, e deixe um único print no fim, fora da corrente, usando f-string. Assim você escreve o print uma vez só.",
+          "solucao": "aluno = \"Marcos\"\nnota = 84\n\nif nota >= 90:\n    conceito = \"A\"\nelif nota >= 80:\n    conceito = \"B\"\nelif nota >= 70:\n    conceito = \"C\"\nelse:\n    conceito = \"Reprovado\"\n\nprint(f\"{aluno}: conceito {conceito}\")"
+        }
+      ]
+    },
+
+    {
+      "id": "m02l04",
+      "numero": 4,
+      "titulo": "E, ou, não",
+      "resumo": "Juntar várias condições numa pergunta só.",
+      "conceito": [
+        {
+          "tipo": "texto",
+          "conteudo": "Algumas decisões dependem de mais de uma coisa ao mesmo tempo. Para isso existem três palavras: and, or e not. Elas se escrevem em inglês, mas se leem exatamente como em português."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "O and exige que as duas condições sejam verdadeiras. Basta uma falhar para o conjunto ser falso."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(True and True)\nprint(True and False)\nprint(False and False)",
+          "nota": "Só a primeira linha é verdadeira. O and é exigente."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "O or se contenta com uma. Basta que qualquer uma das condições seja verdadeira para o conjunto ser verdadeiro."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(True or False)\nprint(False or True)\nprint(False or False)",
+          "nota": "Só a última é falsa. O or é generoso."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "O not simplesmente inverte. O que era verdadeiro passa a falso, e vice-versa."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "chuva = False\n\nprint(chuva)\nprint(not chuva)",
+          "nota": "Costuma-se ler como negação em português: se não chove, faça o culto no pátio."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Na prática, cada lado do and ou do or costuma ser uma comparação inteira. É aqui que as coisas ganham utilidade."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "idade = 25\nbatizado = True\n\nif idade >= 18 and batizado:\n    print(\"Pode ser membro votante\")\nelse:\n    print(\"Ainda não\")",
+          "nota": "Mude a idade para 15, ou batizado para False, e veja que basta uma das duas condições falhar."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "Um erro clássico: escrever if dia == \"sábado\" or \"domingo\". Isso não pergunta o que parece. Cada lado do or precisa ser uma comparação completa, com a variável repetida: if dia == \"sábado\" or dia == \"domingo\". Esse é o tipo de defeito que não dá erro — só responde errado."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Quando você mistura and e or na mesma linha, o and é resolvido primeiro, assim como a multiplicação vem antes da soma. Mas em vez de decorar a precedência, ponha parênteses: eles custam dois caracteres e economizam meia hora de confusão."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "membro = True\nidade = 16\nautorizado = True\n\nif membro and (idade >= 18 or autorizado):\n    print(\"Pode participar da viagem\")\nelse:\n    print(\"Precisa de autorização\")",
+          "nota": "Os parênteses deixam claro que ser membro é obrigatório, e que a idade ou a autorização resolvem o segundo requisito."
+        }
+      ],
+      "laboratorio": {
+        "instrucao": "Uma verificação de requisitos para o batismo. Mude os três valores em várias combinações e observe quais delas passam. Depois troque um and por or e veja como o critério fica frouxo demais.",
+        "codigo": "idade = 20\nfezCurso = True\nentrevistado = False\n\nif idade >= 12 and fezCurso and entrevistado:\n    print(\"Apto para o batismo\")\nelif idade >= 12 and fezCurso:\n    print(\"Falta apenas a entrevista\")\nelif idade >= 12:\n    print(\"Precisa fazer o curso\")\nelse:\n    print(\"Conversar com os pais primeiro\")"
+      },
+      "exercicios": [
+        {
+          "id": "e1",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "print(True and False)",
+          "opcoes": ["True", "False", "True and False", "Erro"],
+          "correta": 1,
+          "explicacao": "O and exige que os dois lados sejam verdadeiros. Como um deles é falso, o conjunto é falso."
+        },
+        {
+          "id": "e2",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "idade = 15\nautorizado = True\n\nif idade >= 18 or autorizado:\n    print(\"Liberado\")\nelse:\n    print(\"Bloqueado\")",
+          "opcoes": ["Liberado", "Bloqueado", "True", "Nada"],
+          "correta": 0,
+          "explicacao": "Ao or basta um lado verdadeiro. A idade não alcança 18, mas a autorização é True, e isso já resolve."
+        },
+        {
+          "id": "e3",
+          "tipo": "escolha",
+          "enunciado": "Qual destas linhas pergunta corretamente se o dia é sábado ou domingo?",
+          "opcoes": [
+            "if dia == \"sábado\" or \"domingo\":",
+            "if dia == \"sábado\" or dia == \"domingo\":",
+            "if dia == \"sábado\" and dia == \"domingo\":",
+            "if dia == (\"sábado\" or \"domingo\"):"
+          ],
+          "correta": 1,
+          "explicacao": "Cada lado do or precisa ser uma comparação completa. A terceira opção exigiria que o dia fosse os dois ao mesmo tempo, o que é impossível. A primeira e a quarta não dão erro, mas respondem errado."
+        },
+        {
+          "id": "e4",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "chuva = False\n\nif not chuva:\n    print(\"Culto no pátio\")\nelse:\n    print(\"Culto no salão\")",
+          "opcoes": ["Culto no pátio", "Culto no salão", "False", "Erro"],
+          "correta": 0,
+          "explicacao": "O not inverte o valor: como chuva é False, not chuva é True, e o primeiro bloco executa. Lê-se naturalmente: se não chove, culto no pátio."
+        },
+        {
+          "id": "e5",
+          "tipo": "codigo",
+          "enunciado": "Crie a variável podeVotar, que deve ser verdadeira somente se a pessoa for membro e tiver 18 anos ou mais. Use uma única expressão, sem if.",
+          "inicial": "membro = True\nidade = 16\n\n# crie podeVotar aqui",
+          "verificacao": "expressao",
+          "testes": [
+            { "rotulo": "podeVotar", "chamada": "podeVotar", "esperado": "False" }
+          ],
+          "dica": "Uma linha só: podeVotar = membro and idade >= 18. O resultado de uma expressão lógica pode ser guardado numa variável, exatamente como o de uma conta.",
+          "solucao": "membro = True\nidade = 16\n\npodeVotar = membro and idade >= 18"
+        },
+        {
+          "id": "e6",
+          "tipo": "codigo",
+          "enunciado": "Um culto extraordinário só acontece se houver pregador confirmado e, além disso, o templo estiver disponível ou houver local alternativo. Produza exatamente a linha esperada.",
+          "mostraEsperado": true,
+          "inicial": "pregador = True\ntemplo = False\nalternativo = True\n\n# escreva o if e o else",
+          "verificacao": "saida",
+          "esperado": "Culto confirmado",
+          "dica": "Use parênteses para agrupar a segunda parte: if pregador and (templo or alternativo). No else, imprima Culto adiado.",
+          "solucao": "pregador = True\ntemplo = False\nalternativo = True\n\nif pregador and (templo or alternativo):\n    print(\"Culto confirmado\")\nelse:\n    print(\"Culto adiado\")"
+        }
+      ]
+    },
+
+    {
+      "id": "m02l05",
+      "numero": 5,
+      "titulo": "Recapitulação",
+      "resumo": "As decisões todas juntas, num programa que você poderia usar de verdade.",
+      "conceito": [
+        {
+          "tipo": "texto",
+          "conteudo": "Nenhum conceito novo aqui. Vale só recolher o que você aprendeu neste módulo: o tipo bool e suas duas faces; as seis comparações; o if com seus dois-pontos e sua indentação de quatro espaços; o else como caminho alternativo; a corrente de elif, em que só o primeiro caso verdadeiro acontece; e as três palavras and, or e not."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "# Tudo do módulo, num só bloco\n\npresentes = 143\nmembros = 200\nchuva = True\n\nfrequencia = presentes / membros * 100\nboaFrequencia = frequencia >= 70\n\nif boaFrequencia and chuva:\n    print(\"Casa cheia mesmo com chuva. Notável.\")\nelif boaFrequencia:\n    print(\"Boa frequência.\")\nelif frequencia >= 50:\n    print(\"Frequência regular.\")\nelse:\n    print(\"Frequência preocupante.\")\n\nprint(f\"{presentes} de {membros} — {frequencia}%\")",
+          "nota": "Leia de cima para baixo e identifique cada peça. Depois mude os três valores do início e veja o programa mudar de opinião."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "Um lembrete que vale para o resto da sua vida com Python: um sinal de igual guarda, dois sinais perguntam. Quando um if se comportar de modo inexplicável, esse é o primeiro lugar a olhar."
+        }
+      ],
+      "laboratorio": {
+        "instrucao": "Espaço livre. Sugestão: escreva um programa que decida se um culto deve acontecer no templo ou no anexo, considerando o número de presentes, a capacidade de cada espaço e se está chovendo.",
+        "codigo": "# Escreva o que quiser aqui.\n\n"
+      },
+      "exercicios": [
+        {
+          "id": "e1",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "a = 10\nb = 10\n\nprint(a == b, a != b, a >= b)",
+          "opcoes": [
+            "True False True",
+            "True True False",
+            "False True True",
+            "True False False"
+          ],
+          "correta": 0,
+          "explicacao": "São iguais, portanto a igualdade é True e a diferença é False. E maior ou igual aceita a igualdade, então também é True."
+        },
+        {
+          "id": "e2",
+          "tipo": "escolha",
+          "enunciado": "O que este código mostra?",
+          "codigo": "nota = 92\n\nif nota >= 70:\n    print(\"Aprovado\")\nelif nota >= 90:\n    print(\"Distinção\")",
+          "opcoes": [
+            "Aprovado",
+            "Distinção",
+            "Aprovado e Distinção",
+            "Nada"
+          ],
+          "correta": 0,
+          "explicacao": "A primeira condição já é verdadeira e a corrente para ali. Distinção seria inalcançável para qualquer nota — o conserto é inverter a ordem das duas perguntas."
+        },
+        {
+          "id": "e3",
+          "tipo": "escolha",
+          "enunciado": "Qual é o resultado desta expressão?",
+          "codigo": "print(not (5 > 3))",
+          "opcoes": ["True", "False", "5", "Erro"],
+          "correta": 1,
+          "explicacao": "Cinco é maior que três, então o interior dos parênteses vale True. O not inverte, e o resultado é False."
+        },
+        {
+          "id": "e4",
+          "tipo": "codigo",
+          "enunciado": "Uma inscrição só é aceita se houver vagas e o candidato tiver feito o curso introdutório. Guarde a resposta na variável aceito, usando uma única expressão lógica.",
+          "inicial": "vagasRestantes = 5\nfezIntrodutorio = True\n\n# crie aceito aqui",
+          "verificacao": "expressao",
+          "testes": [
+            { "rotulo": "aceito", "chamada": "aceito", "esperado": "True" }
+          ],
+          "dica": "Haver vagas significa que vagasRestantes é maior que zero. Junte as duas condições com and.",
+          "solucao": "vagasRestantes = 5\nfezIntrodutorio = True\n\naceito = vagasRestantes > 0 and fezIntrodutorio"
+        },
+        {
+          "id": "e5",
+          "tipo": "codigo",
+          "enunciado": "Classifique a oferta em relação à meta: igual ou acima da meta é Superada, a partir de 80% da meta é Próxima, e abaixo disso é Distante. Guarde em situacao.",
+          "inicial": "oferta = 1300\nmeta = 1500\n\n# escreva a corrente aqui",
+          "verificacao": "expressao",
+          "testes": [
+            { "rotulo": "situacao", "chamada": "situacao", "esperado": "'Próxima'" }
+          ],
+          "dica": "Oitenta por cento da meta se escreve meta * 0.8. Comece pelo caso mais restrito: if oferta >= meta.",
+          "solucao": "oferta = 1300\nmeta = 1500\n\nif oferta >= meta:\n    situacao = \"Superada\"\nelif oferta >= meta * 0.8:\n    situacao = \"Próxima\"\nelse:\n    situacao = \"Distante\""
+        },
+        {
+          "id": "e6",
+          "tipo": "codigo",
+          "enunciado": "O relatório de domingo, agora com opinião. Calcule a frequência, classifique-a, e produza exatamente as três linhas esperadas.",
+          "mostraEsperado": true,
+          "inicial": "presentes = 143\nmembros = 200\nchuva = True\n\n# calcule, classifique e imprima",
+          "verificacao": "saida",
+          "esperado": "Presentes: 143 de 200\nFrequência: 71.5%\nSituação: Boa, apesar da chuva",
+          "dica": "A frequência é presentes / membros * 100. Para a situação: se a frequência for 70 ou mais e houver chuva, o texto é \"Boa, apesar da chuva\"; se for 70 ou mais sem chuva, é \"Boa\"; senão é \"Regular\". Guarde numa variável e imprima ao final.",
+          "solucao": "presentes = 143\nmembros = 200\nchuva = True\n\nfrequencia = presentes / membros * 100\n\nif frequencia >= 70 and chuva:\n    situacao = \"Boa, apesar da chuva\"\nelif frequencia >= 70:\n    situacao = \"Boa\"\nelse:\n    situacao = \"Regular\"\n\nprint(f\"Presentes: {presentes} de {membros}\")\nprint(f\"Frequência: {frequencia}%\")\nprint(f\"Situação: {situacao}\")"
+        }
+      ]
+    }
+  ]
+}

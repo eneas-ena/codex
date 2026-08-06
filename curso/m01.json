@@ -497,6 +497,155 @@
     {
       "id": "m01l05",
       "numero": 5,
+      "titulo": "Parênteses, colchetes e chaves",
+      "resumo": "Os três pares de sinais que parecem iguais e fazem coisas completamente diferentes.",
+      "conceito": [
+        {
+          "tipo": "texto",
+          "conteudo": "Você já viu os três pares circulando pelo código sem que ninguém os apresentasse. Eles parecem variações do mesmo enfeite, mas para Python são três coisas sem nenhum parentesco. Trocar um pelo outro não é imprecisão: é outro comando."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Comecemos pelos parênteses, que têm dois usos. O primeiro é chamar uma função: eles são o modo de dizer a Python execute isto, com o que está aqui dentro. Sem eles, você apenas menciona o nome da função, sem mandar nada acontecer."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(\"Com parênteses, o comando acontece\")\n\nprint\n\nprint(\"E esta linha continua funcionando\")",
+          "nota": "A linha do meio não dá erro nem faz nada visível: você apenas citou o nome da função, como quem aponta para uma ferramenta sem pegá-la."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "O segundo uso dos parênteses é agrupar uma conta, forçando que aquele trecho seja resolvido primeiro. É o mesmo papel que eles têm no papel, na matemática."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "print(10 + 2 * 5)\nprint((10 + 2) * 5)",
+          "nota": "Os parênteses de fora, nas duas linhas, chamam o print. Os de dentro, na segunda, agrupam a soma. Dois usos diferentes na mesma linha."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Os colchetes também têm dois usos, e ambos dizem respeito a sequências. O primeiro é criar uma lista: vários valores guardados sob um único nome, separados por vírgula."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "livros = [\"Gênesis\", \"Êxodo\", \"Levítico\"]\n\nprint(livros)\nprint(len(livros))",
+          "nota": "A função len diz quantos itens há. As listas ganham um módulo inteiro mais adiante; por ora basta reconhecer o formato."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "O segundo uso é pegar um item pela posição. E aqui vem a regra que mais confunde no começo: a contagem não começa em um, começa em zero."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "livros = [\"Gênesis\", \"Êxodo\", \"Levítico\"]\n\nprint(livros[0])\nprint(livros[2])",
+          "nota": "O primeiro item é livros[0] e o terceiro é livros[2]. Numa lista de três, a última posição válida é 2 — pedir livros[3] dá IndexError."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Curiosamente, isso também funciona com texto, porque uma palavra é uma sequência de letras."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "nome = \"Paulo\"\n\nprint(nome[0])\nprint(nome[4])",
+          "nota": "P é a posição 0 e o é a posição 4."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Chegamos às chaves. Delas você já usa um caso desde a lição 2: dentro de uma f-string, elas marcam o lugar onde entra o valor de uma variável. Fora desse contexto, chaves criam um dicionário — pares de chave e valor, como um verbete e sua definição. É assunto do Módulo 5, mas vale ver o formato."
+        },
+        {
+          "tipo": "codigo",
+          "conteudo": "pregador = \"Enéas\"\nprint(f\"Hoje prega {pregador}\")\n\nescala = {\"manhã\": \"Enéas\", \"noite\": \"Paulo\"}\nprint(escala[\"manhã\"])",
+          "nota": "Repare na última linha: as chaves criaram o dicionário, e os colchetes pegaram um item dele. Nos dicionários, o que vai entre colchetes não é uma posição numérica, e sim a chave."
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Vale guardar o resumo. Parênteses: chamar função, ou agrupar conta. Colchetes: criar lista, ou pegar item pela posição. Chaves: marcar variável dentro de f-string, ou criar dicionário. E note o padrão que atravessa os três: o par sempre vem depois de alguma coisa quando serve para acessar ou executar, e vem sozinho quando serve para criar."
+        },
+        {
+          "tipo": "aviso",
+          "conteudo": "Os pares sempre andam aos pares. A esmagadora maioria dos SyntaxError que você vai encontrar na vida é um destes sinais aberto e não fechado — ou fechado com o par errado. Quando Python reclamar de sintaxe, o primeiro lugar a olhar é este."
+        }
+      ],
+      "laboratorio": {
+        "instrucao": "Rode como está. Depois experimente: troque um colchete por um parêntese e veja o erro; peça livros[5]; tente escala[0] em vez de escala pela chave. Cada erro aqui ensina mais do que um acerto.",
+        "codigo": "livros = [\"Gênesis\", \"Êxodo\", \"Levítico\", \"Números\"]\nescala = {\"manhã\": \"Enéas\", \"noite\": \"Paulo\"}\n\nprint(livros[0])\nprint(livros[3])\nprint(len(livros))\n\nprint(escala[\"noite\"])\n\nprint(f\"O primeiro livro é {livros[0]}\")"
+      },
+      "exercicios": [
+        {
+          "id": "s1",
+          "tipo": "escolha",
+          "enunciado": "Nesta linha, quantos pares de parênteses existem e para que serve cada um?",
+          "codigo": "print((40 + 8) / 2)",
+          "opcoes": [
+            "Um par só, para chamar o print",
+            "Dois pares: o de fora chama o print, o de dentro agrupa a soma",
+            "Dois pares, os dois agrupando contas",
+            "Dois pares, os dois chamando funções"
+          ],
+          "correta": 1,
+          "explicacao": "O par externo é o da chamada de função — é ele que faz o print acontecer. O interno força a soma a ser resolvida antes da divisão."
+        },
+        {
+          "id": "s2",
+          "tipo": "escolha",
+          "enunciado": "Qual destas linhas cria uma lista?",
+          "opcoes": [
+            "livros = (\"Gênesis\", \"Êxodo\")",
+            "livros = [\"Gênesis\", \"Êxodo\"]",
+            "livros = {\"Gênesis\", \"Êxodo\"}",
+            "livros = \"Gênesis\", \"Êxodo\""
+          ],
+          "correta": 1,
+          "explicacao": "Lista se cria com colchetes. As outras formas criam coisas diferentes que você verá adiante — nenhuma delas é lista."
+        },
+        {
+          "id": "s3",
+          "tipo": "escolha",
+          "enunciado": "O que esta linha mostra?",
+          "codigo": "evangelhos = [\"Mateus\", \"Marcos\", \"Lucas\", \"João\"]\n\nprint(evangelhos[2])",
+          "opcoes": ["Mateus", "Marcos", "Lucas", "João"],
+          "correta": 2,
+          "explicacao": "A contagem começa em zero: Mateus é 0, Marcos é 1, Lucas é 2. É por isso que a posição 2 devolve o terceiro item."
+        },
+        {
+          "id": "s4",
+          "tipo": "escolha",
+          "enunciado": "Uma destas linhas vai dar SyntaxError. Qual?",
+          "codigo": "print(len([\"a\", \"b\"]))\nprint((3 + 4) * 2)\nprint([\"a\", \"b\"))\nprint(f\"{3 + 4}\")",
+          "opcoes": ["A primeira", "A segunda", "A terceira", "A quarta"],
+          "correta": 2,
+          "explicacao": "Na terceira linha um colchete foi aberto e fechado com parêntese. Python exige que cada par seja fechado com o mesmo sinal com que foi aberto."
+        },
+        {
+          "id": "s5",
+          "tipo": "escolha",
+          "enunciado": "O que esta linha mostra?",
+          "codigo": "print(\"Timóteo\"[0])",
+          "opcoes": ["Timóteo", "T", "0", "Erro, porque texto não aceita colchetes"],
+          "correta": 1,
+          "explicacao": "Texto é uma sequência de letras, e por isso aceita colchetes de posição do mesmo jeito que uma lista. A posição 0 é a primeira letra."
+        },
+        {
+          "id": "s6",
+          "tipo": "codigo",
+          "enunciado": "Crie uma lista chamada cartas com os quatro nomes: Romanos, Coríntios, Gálatas, Efésios. Depois crie a variável terceira, contendo o terceiro item da lista — pegue-o pela posição, não digite o nome.",
+          "inicial": "",
+          "verificacao": "expressao",
+          "testes": [
+            { "rotulo": "cartas", "chamada": "cartas", "esperado": "['Romanos', 'Coríntios', 'Gálatas', 'Efésios']" },
+            { "rotulo": "terceira", "chamada": "terceira", "esperado": "'Gálatas'" },
+            { "rotulo": "quantidade", "chamada": "len(cartas)", "esperado": "4" }
+          ],
+          "dica": "A lista se cria com colchetes e vírgulas entre os itens. Para o terceiro item, lembre que a contagem começa em zero: terceira = cartas[2].",
+          "solucao": "cartas = [\"Romanos\", \"Coríntios\", \"Gálatas\", \"Efésios\"]\n\nterceira = cartas[2]"
+        }
+      ]
+    },
+
+    {
+      "id": "m01l06",
+      "numero": 6,
       "titulo": "Recapitulação",
       "resumo": "Nenhum conceito novo. Só o que você já sabe, misturado e aplicado a um caso inteiro.",
       "conceito": [
